@@ -2,6 +2,33 @@
 
 Skill evolution history. Format: [Keep a Changelog](https://keepachangelog.com/)
 
+## [v3.1.1] — 2026-10-15 — gbrain 共享 HTTP serve 迁移 (patch)
+
+### Changed
+- 从 stdio-local `gbrain serve` 迁移到共享 `gbrain serve --http`(端口 3131,绑 127.0.0.1)
+- 关闭 2 个 stdio serve(PID 501368 + 真锁主 **PID 528536**),新 HTTP serve PID **771148** 在后台持续运行
+- v3.1 注释中引用的"PID 864412"是当时真实值,启动之间已被 MCP gbrain 重启覆盖 — 该值不再代表当前锁主
+
+### Wired
+- **Codex**:`~/.codex/config.toml` 写入 `[mcp_servers.gbrain]` inline bearer token(file 收紧到 0600);SessionEnd hook 落盘
+- **Claude Code**:`~/.claude/settings.json` 写入 5 个 lifecycle hooks(SessionStart / UserPromptSubmit / Stop / SessionEnd / PreCompact)
+- **plugin gbrain@gbrain**:enabled (user-scope)
+
+### Pending (manual)
+- Claude Code MCP server registration 未通过 bootstrap 完成 — MSYS2 PATH 中无 `claude.exe`。在 PowerShell 跑一次:
+  `claude mcp add gbrain --scope user --transport http http://127.0.0.1:3131/mcp`
+  之后 `gbrain doctor` 会将 Claude Code 列入 harness 列表
+
+### Brain snapshot (at migration)
+- pages: **18** / chunks: **110**
+- engine: pglite @ version **0.60.214.0**
+- UPGRADE_AVAILABLE: 0.60.243.0(非阻塞,每次启动刷此行)
+
+### Verification
+- `gbrain doctor --only harness_wiring --json` → `{"status":"healthy","health_score":100,"top_issues":[]}`
+
+---
+
 ## [v3.1] — 2026-10-15 — Docs Mirror Fold-in
 
 ### Added

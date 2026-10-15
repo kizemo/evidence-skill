@@ -1,42 +1,50 @@
-# Claude Code Skills 生态调研任务
+# evidence-skill 维护任务
 
-## 目标
-调研 GitHub 上 Claude Code Skills 生态的开源高星项目,对比分析,输出团队分享用 md 报告。
+> 用途:跟进项目下一阶段 + 给新会话的快速 context。
+> 上次更新:2026-10-15(共享 HTTP serve 迁移完成,脑锁释放)
 
-## 产出
-- `agent-skills-调研报告-2026-10-12.md` (1500-2500 字)
+## 当前阶段 / Active Phase
 
-## 进度
-- [x] 任务分类 + 方案审 (bounded research)
-- [x] TaskCreate 4 项任务
-- [x] 扫描 GitHub 候选项目
-- [x] 深读 Top 项目 README (WebFetch 失败改用 gh API 抓 README base64)
-- [x] 构建对比矩阵
-- [x] 编写调研报告 md
+**v3.1 fold-in 已合并**(`81eeeed`)— chapters 19/20 + 168 页 docs mirror 落盘,产物齐备。
+最后一步 "gbrain ingest" 因脑锁被另一 agent session 占用而**显式暂停**(原 CHANGELOG v3.1 行)。
 
-## 产出
-- `agent-skills-调研报告-2026-10-12.md` (350 行,约 2800 字) — **主题已被用户修正,本份仅作安装部署参考保留**
-- `skills-from-materials-调研报告-2026-10-12.md` — **主题修正版**:聚焦「如何从书籍/资料/讲座/教程蒸馏出 Skill」的元能力
-- `book-to-skill-部署报告-2026-10-12.md` — **部署** 的 virgiliojr94/book-to-skill 到 cc-haha 的完整步骤
+2026-10-15 本日 session 完成脑锁释放 + 共享 HTTP serve 迁移:
 
-## 用户修正(2026-10-12)
-- 用户原意:研究**「如何提炼 skill 的 skill」**(meta-skill),不是 Claude 推荐安装的 skill 列表
-- 修正:新建 `skills-from-materials-调研报告-2026-10-12.md`,前一份保留作为安装部署参考
+- ✅ 释放脑锁(杀 PID 501368 + 真锁主 528536)
+- ✅ 起 `gbrain serve --http` PID **771148** → `http://127.0.0.1:3131/mcp`,健康持续
+- ✅ **Codex** 完整接入:`~/.codex/config.toml` 写 inline bearer token + SessionEnd hook
+- ✅ **Claude Code** 5 个 lifecycle hooks 写入 `~/.claude/settings.json`(SessionStart / UserPromptSubmit / Stop / SessionEnd / PreCompact)
+- ✅ `gbrain doctor --only harness_wiring --json` → `{status:"healthy", health_score:100, top_issues:[]}`
 
-## cc-haha 部署(2026-10-12)
-- 用户要求:**为 cc-haha 安装部署 virgiliojr94/book-to-skill**
-- 部署方式:Claude Code 单 skill 模式(直接复制到 `~/.claude/skills/book-to-skill/`)
-- 验证:Claude Code 已自动识别,`python -m book_to_skill --check` 报告所有提取器 ready
-- 已知限制:本机 cryptography 包有 Python 3.14 metadata 编码 bug,导致 pdfminer.six 实际 import 失败;但 book-to-skill 会 fallback 到 pypdf,不影响主流程
+## 下一步 / Next
 
-## 调研方法
-1. `gh search repos` 多关键词扫
-2. WebFetch 抓 Top 候选 README
-3. 对比矩阵
-4. 写报告
+- [ ] **gbrain ingest 168 页 docs mirror**(`E:/obsidian/evidence/_sources/evidence-docs/`)
+- [ ] **gbrain ingest R1-R21**(19 R, 7150+ 行,位于 `E:/obsidian/evidence/_research/`)
+- [ ] **补 Claude Code MCP server 注册**(MSYS2 PATH 找不到 `claude.exe`,需 PowerShell 跑
+      `claude mcp add gbrain --scope user --transport http http://127.0.0.1:3131/mcp`)
+- [ ] ingest 完后:`gbrain stats --json` 记录新 page/chunk 计数 → CHANGELOG 加 v3.2 条
 
-## 关键问题
-- Anthropic 官方 skills 仓库?
-- 第三方插件市场最强?
-- IDE 兼容性?
-- MCP 与 Skills 关系?
+## 历史里程碑(已 commit,不再回看)
+
+- [x] 2026-10-12 **调研阶段** — agent-skills + skills-from-materials + book-to-skill 三份调研 + 部署报告
+- [x] 2026-10-13 **v1** — SKILL.md + ch01-ch10 实战篇 + glossary/patterns/cheatsheet/topic-index/frameworks
+- [x] 2026-10-14 **v3** — R-series chapters ch11-ch18(R1-R21 7,150+ 行)
+- [x] 2026-10-15 **v3.1** — ch19 components 全量(94) + ch20 evidence-warehouse 真相 + 168 页 docs mirror
+- [x] 2026-10-15 **patch** — 共享 HTTP serve 迁移(本 task 单列条目)
+
+## 关键路径索引
+
+| 路径 | 内容 |
+|---|---|
+| `SKILL.md` | master entry |
+| `chapters/ch01-ch20.md` | 20 章核心 |
+| `frameworks.md` / `patterns.md` / `glossary.md` / `cheatsheet.md` / `topic-index.md` | 配套速查 |
+| `E:/obsidian/evidence/_sources/evidence-docs/` | 168 页 docs mirror(待 ingest) |
+| `E:/obsidian/evidence/_research/` | R1-R21 调研系列(待 ingest) |
+| `C:/Temp/gbrain-bootstrap-premint-*.log` | bootstrap-harness token 备份 |
+
+## 不要做
+
+- 不要 reset / clean / stash 任何 git 操作(v3 / v3.1 已稳定)
+- 不要启动第二个 `gbrain serve --http`(端口 3131 必须独占)
+- 不要删除 `C:/Temp/gbrain-bootstrap-premint-*.log`(token 备份)
