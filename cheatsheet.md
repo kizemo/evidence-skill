@@ -63,7 +63,7 @@
 | 改完 nginx config | `bash deploy/scripts/sync_nginx_config_to_git.sh` | 后续 phase 可 reference |
 | Playwright 跑 prod | 设 `CLOUDFLARE_ACCESS_TOKEN` env var + 跑 `tests/cf_access_auth.py` | CF Access 拦自动化 |
 
-## 5. Components 决策规则 (R3)
+## 5. Components 决策规则 (R3 + ch19 全量)
 
 | 触发 | 立即做 | 因为 |
 |---|---|---|
@@ -73,6 +73,7 @@
 | Checkbox 标签 | `{% toggle %}` | `/components/checkbox` URL 错位 |
 | 高级图表 (box_plot / waterfall) | `{% custom_echart %}` | 内置缺失,逃逸 ECharts |
 | URL 路径 | snake_case `/components/scatter_chart`,**不** kebab-case | Mintlify 404 模式 |
+| **94 组件全量查表** | 翻 `ch19-components-full-reference.md` 或本地 mirror | **ch19** |
 
 ## 6. Auth 决策规则 (R7)
 
@@ -193,6 +194,11 @@
 
 - **本地 R 系列**: `E:/obsidian/evidence/_research/` (19 R, 7,150+ 行)
 - **INDEX**: `E:/obsidian/evidence/_research/INDEX.md` (入口)
+- **168 页 docs mirror** (2026-10-15 全量): `E:/obsidian/evidence/_sources/evidence-docs/`
+  - INDEX: `_INDEX.md` (按 12 主题分组 + 全部 168 页列表)
+  - 8 个主题独立子目录: features/ core-concepts/ components/{8 大类}/ cli/ MCP/ self-host/ Direct Connectors/ evidence-warehouse/
+  - 抓取脚本: `C:/Temp/evidence_crawler.py` (BFS) + `C:/Temp/backfill_components.py` (sitemap 遍历)
+- **Evidence Warehouse 真相**: 单页 anchor,12 connector → data-sources 映射,见 **ch20**
 - **长期 KB**: `E:/obsidian/_knowledge_base/evidence/2026-10-product-blueprint.md`
 - **GBrain recall**:
   - `recall projects/sales-bi` — 项目卡片 + 5 facts
@@ -200,4 +206,4 @@
   - `recall concepts/postgres-fdw` — 1 fact
   - `recall companies/evidence-dev` — 1 fact
   - `search "Evidence Core 2026"` — 跨 page 关键字
-- **Skill 本体**: `~/.claude/skills/evidence-skill/` (ch01-ch18, glossary, patterns, cheatsheet)
+- **Skill 本体**: `~/.claude/skills/evidence-skill/` (ch01-ch20, glossary, patterns, cheatsheet, CHANGELOG)

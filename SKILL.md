@@ -1,14 +1,14 @@
 ---
 name: evidence-skill
-description: Use when configuring, debugging, or upgrading Evidence BI Core 2026 v0.10.1 (bi.jury.xin production deployment) — connecting via connection.yaml / evidence.config.yaml / theme.yaml, encountering SQL `column "ds" does not exist` / `cross-database references are not implemented` / `html-tags-not-allowed` / `unsupported type undefined` / `SUBSTR(date)` errors on Chinese schemas (双引号 `"店铺"` `"订单日期"` `"销售金额"`), patching nginx 5 locations to migrate from Legacy 40.x to Core, setting up postgres_fdw for cross-DB queries, applying Pentagram 5-region CSS, writing `{% html %}` blocks, tuning pgbouncer + statement_timeout + matview, evaluating against Metabase / Lightdash, or implementing FastMCP server for self-hosted AI agent access. Triggers: 'evidence', 'bi.jury.xin', 'sales-bi', 'cutover', 'connection.yaml FLAT', 'theme.yaml 5 层', 'html block', 'mcp selfhost', 'pgbouncer', 'cloudflare access', 'bi tool selection'.
+description: Use when configuring, debugging, or upgrading Evidence BI Core 2026 v0.10.1 (bi.jury.xin production deployment) — connecting via connection.yaml / evidence.config.yaml / theme.yaml, encountering SQL `column "ds" does not exist` / `cross-database references are not implemented` / `html-tags-not-allowed` / `unsupported type undefined` / `SUBSTR(date)` errors on Chinese schemas (双引号 `"店铺"` `"订单日期"` `"销售金额"`), patching nginx 5 locations to migrate from Legacy 40.x to Core, setting up postgres_fdw for cross-DB queries, applying Pentagram 5-region CSS, writing `{% html %}` blocks, tuning pgbouncer + statement_timeout + matview, evaluating against Metabase / Lightdash, or implementing FastMCP server for self-hosted AI agent access. Also covers **94 components full reference** (sidebar 8 大类), **Evidence Warehouse single-page truth** (anchor-only), **12 connector → data-sources mapping**. Triggers: 'evidence', 'bi.jury.xin', 'sales-bi', 'cutover', 'connection.yaml FLAT', 'theme.yaml 5 层', 'html block', 'mcp selfhost', 'pgbouncer', 'cloudflare access', 'bi tool selection', 'components 全量', 'evidence-warehouse single page', 'docs mirror', 'sidebar 不等于 sitemap'.
 ---
 
-<!-- argument-hint: [topic: connection|sql|nginx|fdw|cutover|theme|mcp|upgrade] -->
+<!-- argument-hint: [topic: connection|sql|nginx|fdw|cutover|theme|mcp|upgrade|components|warehouse] -->
 
 # Evidence Core 2026 — Sales BI
 
-**Source**: `E:/obsidian/evidence/` (10 实战笔记) + `E:/obsidian/evidence/_research/` (19 R 系列, 7,150+ 行) + GBrain (6 pages, 11 facts)
-**Generated**: 2026-10-13 (初始) → 2026-10-14 fold-in (R1-R21)
+**Source**: `E:/obsidian/evidence/` (10 实战笔记) + `E:/obsidian/evidence/_research/` (19 R 系列, 7,150+ 行) + `E:/obsidian/evidence/_sources/evidence-docs/` (168 页 docs mirror, 12 主题) + GBrain (6 pages, 11 facts)
+**Generated**: 2026-10-13 (初始) → 2026-10-14 fold-in (R1-R21) → **2026-10-15 v3.1** (168 页 docs mirror 落地 + ch19/ch20)
 
 ## Quick Decision Table
 
@@ -26,8 +26,11 @@ description: Use when configuring, debugging, or upgrading Evidence BI Core 2026
 | Auth 上限 | Self-host 只有 Basic Auth, RLS/SSO 全 Studio | ch13 |
 | AI 调 Self-host | 自写 FastMCP + 4 道 SQL 防线 | ch16 |
 | 改 BI 工具? | 团队 ≥5 / 报表 >30 / 任一 RLS-SSO-邮件订阅 | ch18 |
+| 查具体组件 attrs | 本地 mirror `components/<Class>/components-<name>.md` | ch19 |
+| Evidence Warehouse 详情 | 单页 anchor,连接器都在 `data-sources/` | ch20 |
+| Sidebar 计数 ≠ sitemap | 先查 sitemap 再决定 BFS 策略 | ch20 |
 
-## Chapter Index (18 章,on-demand 加载)
+## Chapter Index (20 章,on-demand 加载)
 
 ### 实战篇 (ch01-ch10) — 2026-10-12 切 prod 笔记
 
@@ -48,7 +51,7 @@ description: Use when configuring, debugging, or upgrading Evidence BI Core 2026
 
 | # | 主题 | 关键内容 | R 来源 |
 |---|---|---|---|
-| [ch11](chapters/ch11-components.md) | Components | 80+ 组件 7 大类, Markup 语法 | R3 |
+| [ch11](chapters/ch11-components.md) | Components Framework | 7 大类 + Markup 语法 + 雷区 | R3 |
 | [ch12](chapters/ch12-deployment.md) | Deployment | 3 模式 + 4 平台 + CLI 13 命令 | R2 |
 | [ch13](chapters/ch13-auth-rbac.md) | Auth & RBAC | 7 反代 + self-host 上限 + RLS | R7 |
 | [ch14](chapters/ch14-performance.md) | Performance | Direct Connector 无 cache + 4 阶段 actionable | R11, R19 |
@@ -56,6 +59,13 @@ description: Use when configuring, debugging, or upgrading Evidence BI Core 2026
 | [ch16](chapters/ch16-mcp-selfhost.md) | MCP Self-Host | FastMCP + 8 tools + 4 道 SQL 防线 | R17 |
 | [ch17](chapters/ch17-upgrade-mgmt.md) | Upgrade & Change Mgmt | 7 步 SOP + 5 分钟回滚 + Obsidian 双向 | R20 |
 | [ch18](chapters/ch18-bi-tools.md) | BI Tool Comparison | vs Metabase/Lightdash + 触发重评阈值 | R10, R13 |
+
+### Docs Mirror 篇 (ch19-ch20) — 2026-10-15 168 页 docs mirror 落地
+
+| # | 主题 | 关键内容 | 来源 |
+|---|---|---|---|
+| [ch19](chapters/ch19-components-full-reference.md) | Components Full Reference | **94 个组件全量索引**(按 sidebar 8 大类) + Quick Decision + Anti-pattern | R3 升级版 |
+| [ch20](chapters/ch20-evidence-warehouse-truth.md) | Evidence Warehouse Truth | Single-page + 4 anchor + 12 connector → data-sources mapping | R14 |
 
 ## Supporting Files
 
@@ -66,10 +76,15 @@ description: Use when configuring, debugging, or upgrading Evidence BI Core 2026
 | [glossary.md](glossary.md) | 关键术语定义 (R 系列扩展) | 概念陌生时 |
 | [patterns.md](patterns.md) | 8 大模式 (含反模式表) | 复用现成方案时 |
 | [cheatsheet.md](cheatsheet.md) | 14 大决策表 + 12 阶段 actionable | 决策快查 |
+| [CHANGELOG.md](CHANGELOG.md) | skill 演进历史 | 想知道"为什么改"时 |
 
 ## 调研 / 沉淀入口 (外部引用)
 
 - **本地 R 系列**: `E:/obsidian/evidence/_research/` (19 R, 7,150+ 行) — INDEX: `_research/INDEX.md`
+- **168 页 docs mirror** (2026-10-15 全量抓取): `E:/obsidian/evidence/_sources/evidence-docs/` — INDEX: `_INDEX.md`
+  - 8 个主题独立子目录: `features/` (14) · `core-concepts/` (8) · `components/{8 大类}/` (94) · `cli/` (3) · `MCP/` (3) · `self-host/` (6) · `Direct Connectors/` (8) · `evidence-warehouse/` (1)
+  - 抓取脚本: `C:/Temp/evidence_crawler.py` (BFS) + `C:/Temp/backfill_components.py` (sitemap 遍历)
+  - sitemap 全覆盖 153 URL,**sidebar ≠ sitemap** 案例见 ch20
 - **长期 KB**: `E:/obsidian/_knowledge_base/evidence/2026-10-product-blueprint.md`
 - **GBrain recall** (keyless, keyword):
   - `recall projects/sales-bi` — 项目 + 5 facts
@@ -80,11 +95,11 @@ description: Use when configuring, debugging, or upgrading Evidence BI Core 2026
 
 ## Scope & Limits
 
-**覆盖**: Core 2026 v0.10.1 配置/部署/排错/升级/性能/主题/MCP/战略对比; 中文 PG schema; nginx patch; postgres_fdw; theme.yaml 5 层; FastMCP 4 道 SQL 防线; vs Metabase/Lightdash 决策
+**覆盖**: Core 2026 v0.10.1 配置/部署/排错/升级/性能/主题/MCP/战略对比; 中文 PG schema; nginx patch; postgres_fdw; theme.yaml 5 层; FastMCP 4 道 SQL 防线; vs Metabase/Lightdash 决策; **94 components 全量 + Evidence Warehouse 真相 (168 页 docs mirror)**
 
 **不覆盖**: Legacy 40.x 新功能; Studio 完整功能; 非 PG 数据库; 多 Core; Pentagram 深度设计(只覆盖 5 region + Phase 2 路径)
 
-**已知限制**: `cryptography` 包损坏 (Python 3.14); 13+ page 待修列名 bug; Browser 真渲染缺 CF Access token; gbrain keyless 无 semantic search; `add_link` 暂时不接未声明 link_type
+**已知限制**: `cryptography` 包损坏 (Python 3.14); 13+ page 待修列名 bug; Browser 真渲染缺 CF Access token; gbrain keyless 无 semantic search; `add_link` 暂时不接未声明 link_type; **gbrain 当前被另一 session 锁定 (PID 864412),write 操作需先 close_owner**; docs mirror `html2text` 转换有标题/段落空行(原 Mintlify 站特性)
 
 **升级频率**: 每周 changelog BREAKING; 每月 PG slow query; 每季 Core 升级 (14 天 hold-back); 每半年 BI 工具重评
 

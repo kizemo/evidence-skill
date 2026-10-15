@@ -2,6 +2,13 @@
 
 > 详细内容,按需加载。SKILL.md 只列章节。
 
+### 🆕 v3.1 (2026-10-15) 增量
+- **components 全量 (94)** → **ch19**
+- **docs mirror (168 页)** → **ch19, ch20**
+- **Evidence Warehouse 真相** → **ch20**
+- **single-page anchor** → **ch20**
+- **sidebar 不等于 sitemap** → **ch20**
+
 ### A
 - **AOT binary** → ch01, ch02, ch17
 - **AGPL (Metabase)** → ch18
@@ -40,6 +47,8 @@
 - **Embedded Analytics (Studio)** → ch18
 - **`{% html %}` block (2026-06-25)** → ch15
 - **ECharts (custom_echart)** → ch11
+- **Evidence Warehouse** → **ch20**, ch12
+- **Evidence.dev docs mirror** → **ch19**, **ch20**
 
 ### F
 - **5 秒回滚** → ch06, ch17
