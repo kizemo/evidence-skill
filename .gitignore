@@ -1,0 +1,72 @@
+# ===== OS =====
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+~$*
+*.swp
+*.swo
+*~
+
+# ===== Editor =====
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+
+# ===== Temp / Debug =====
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+*.old
+*.backup
+*.tgz
+*.tar.gz
+*.zip
+*.7z
+
+# ===== Node / JS =====
+node_modules/
+bower_components/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.env
+venv/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ===== Secrets / Credentials =====
+.env
+.env.*
+*.pem
+*.key
+*.secret
+config.json
+config.yaml
+config.yml
+connection.yaml
+docker-compose.yaml
+
+# ===== Memory files =====
+memory/
+*.memory
+.gbrain/
+
+# ===== Claude Code 临时 =====
+.claude/
+.claude.json
+.claude-flow/
+.copilot/
+.config/
