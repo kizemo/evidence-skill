@@ -1,0 +1,412 @@
+---
+type: external-doc
+title: Evidence Warehouse
+source: https://docs.evidence.dev/evidence-warehouse
+source_hash: b4c8551cc1
+crawled_at: 2026-10-15T00:00:00.000Z
+tags:
+  - crawled
+  - docs
+  - evidence
+---
+
+# Evidence Warehouse
+
+> 原文: <https://docs.evidence.dev/evidence-warehouse>
+
+**Studio only** — part of [Evidence Studio](</#evidence-studio>), our hosted platform.
+
+The **Evidence Warehouse** is Evidence’s built-in, fully managed cloud warehouse. You connect a data source once, Evidence extracts the data into the warehouse, and every report queries it from there — fast, with no infrastructure for you to run. You choose which region the data is stored in (see Storage Regions). When you use the managed warehouse, Evidence handles etl data integration for you — extracting, loading, and making data available for reporting on a schedule. Connectors are how you get data into the Evidence Warehouse. You connect to your data source once, then use that data across all your reports. With this data integration workflow, your reports always query the same extracted data, regardless of which source it came from. Evidence supports different types of connectors: **Databases** , **Object Storage** , **Data Lakes** , **Flat Files** , and **Applications**. If you’d rather have Evidence query a warehouse you own directly — without extracting data into the Evidence Warehouse — use a native connector instead.
+
+* * *
+
+## 
+
+​
+
+Databases
+
+Database connectors connect to your existing data warehouse or database. Evidence extracts the data, and you can define a schedule for sync. **How it works:**
+
+  1. You provide connection credentials to your database
+  2. Evidence runs queries against your database to extract data
+  3. Data is cached in Evidence’s query engine in your chosen region
+  4. Reports query the cached data for fast performance
+
+You choose where your extracted data is stored. See available regions. **Best for:**
+
+  * Existing data warehouses (Snowflake, BigQuery, Redshift, etc.)
+  * Data that’s already modeled and ready to report on
+  * Teams who want Evidence to manage the data pipeline
+
+**Supported databases:**
+
+  * [Snowflake](</direct-connectors/snowflake>)
+  * [BigQuery](</direct-connectors/bigquery>)
+  * [PostgreSQL](</data-sources/postgres>)
+  * [RDS PostgreSQL](</data-sources/rds-postgres>)
+  * [Redshift](</data-sources/redshift>)
+  * [MotherDuck](</data-sources/motherduck>)
+  * [Athena](</data-sources/athena>)
+  * [MySQL](</data-sources/mysql>)
+  * [SQL Server](</data-sources/sqlserver>)
+  * [Azure SQL Database](</data-sources/azure-sql>)
+  * [Azure Postgres](</data-sources/azure-postgres>)
+  * [Databricks](</data-sources/databricks>)
+
+We are continuously adding support for new databases. Request one [here](<https://evidence.dev/contact-us>).
+
+* * *
+
+## 
+
+​
+
+Direct Connectors
+
+Prefer to keep your data in your own warehouse? **Native connectors** are the alternative to the Evidence Warehouse: instead of extracting data, Evidence runs queries live against a warehouse you own. Each request from a viewer issues queries against your warehouse and returns the rows directly. This is a zero etl approach — since the warehouse is queried directly, there’s no extraction, loading, or sync pipeline to maintain. **How it works:**
+
+  1. You provide credentials with read access to your warehouse
+  2. Evidence issues queries directly to your warehouse when viewers load reports
+
+**Key characteristics:**
+
+  * **Always live** : viewers see the current state of your warehouse on every load — no sync schedule.
+  * **Data stays in your warehouse** : Evidence holds credentials but doesn’t store data.
+
+**Best for:**
+
+  * Use cases where data freshness is important
+  * Strict data residency requirements
+  * Teams that already maintain RLS policies in their warehouse and want Evidence to honour them
+
+Native connectors live in the **Warehouses** section:
+
+  * [Snowflake](</direct-connectors/snowflake>)
+  * [Fabric](</direct-connectors/fabric>)
+  * [ClickHouse](</direct-connectors/clickhouse>)
+  * [BigQuery](</direct-connectors/bigquery>)
+
+* * *
+
+## 
+
+​
+
+Object Storage
+
+Object storage connectors read Parquet files directly from cloud storage buckets that you control. Evidence queries the data in place using ClickHouse’s S3 table engine. In addition to the below named providers, any S3 compatible storage is supported (via the “custom S3” connector). **How it works:**
+
+  1. You store Parquet files in your own bucket (S3, GCS, Azure, etc.)
+  2. You provide bucket credentials to Evidence
+  3. Evidence queries the Parquet files directly — no data is copied
+
+**Key characteristics:**
+
+  * **Instant data availability** : When you update a Parquet file in your bucket, the new data is immediately available in Evidence—no sync or publish required
+  * **Schema changes require publish** : Adding or removing columns requires clicking **Publish** or setting up a refresh schedule
+  * **Data stays in your infrastructure** : Your data never leaves your bucket, Evidence queries it in place
+  * **S3-compatible** : Any storage provider with an S3-compatible API works (AWS S3, GCS, Azure Blob, Cloudflare R2, MinIO, Backblaze B2, etc.)
+
+**Best for:**
+
+  * Data residency or sovereignty requirements
+  * Teams who manage their own data pipelines and produce Parquet files
+  * High-frequency data updates where you control the source files
+  * Keeping data within your own infrastructure
+
+**Supported providers:**
+
+  * [AWS S3](</data-sources/s3>)
+  * [Google Cloud Storage](</data-sources/gcs>)
+  * [Azure Blob Storage](</data-sources/abs>)
+  * [Cloudflare R2](</data-sources/r2>)
+  * [Backblaze B2](</data-sources/backblaze>)
+  * [Custom S3-compatible provider](</data-sources/custom>)
+
+* * *
+
+## 
+
+​
+
+Data Lakes
+
+Data lake connectors connect to open table formats that provide ACID transactions, schema evolution, and time travel capabilities on top of object storage. **How it works:**
+
+  1. You provide credentials to your data lake catalog or storage
+  2. Evidence reads the table metadata and data files
+  3. Data is queried with full support for the table format’s features
+
+**Best for:**
+
+  * Teams using modern lakehouse architectures
+  * Large-scale data with complex partitioning
+  * Scenarios requiring time travel or schema evolution
+
+**Supported data lakes:**
+
+  * [Iceberg](</data-sources/iceberg>)
+  * [Delta Lake](</data-sources/deltalake_s3>)
+
+* * *
+
+## 
+
+​
+
+Applications
+
+Application connectors sync data from SaaS applications and APIs. Evidence uses Fivetran to extract and normalize data from these sources. **How it works:**
+
+  1. You authenticate with the application (OAuth or API key)
+  2. Evidence syncs data on a configurable schedule
+  3. Data is normalized and stored in Evidence’s query engine
+
+**Best for:**
+
+  * Product analytics and operational reporting
+  * Combining SaaS data with your data warehouse
+  * Teams who want turnkey integrations without building pipelines
+
+**Supported applications:**
+
+  * [Linear](</data-sources/linear>)
+  * [HubSpot](</data-sources/hubspot>)
+  * [Stripe](</data-sources/stripe>)
+  * [GitHub](</data-sources/github>)
+  * [Attio](</data-sources/attio>)
+  * [PostHog](</data-sources/posthog>)
+  * [Google Ads](</data-sources/google-ads>)
+  * [Facebook Ads](</data-sources/facebook-ads>)
+  * [Twilio](</data-sources/twilio>)
+
+We are continuously adding support for new applications. Request one [here](<https://evidence.dev/contact-us>).
+
+* * *
+
+## 
+
+​
+
+Flat Files
+
+Upload flat files directly to Evidence for quick data analysis without setting up external connections. **How it works:**
+
+  1. Upload a file directly through the Evidence interface
+  2. Evidence processes and stores the data
+  3. Query the data immediately in your reports
+
+**Supported formats:**
+
+  * CSV
+  * Parquet
+  * JSONL
+  * Excel
+
+**Best for:**
+
+  * Quick prototyping and ad-hoc analysis
+  * Small datasets that don’t require a database
+  * Getting started with Evidence before connecting external sources
+
+See [Flat Files](</data-sources/file>) for details.
+
+* * *
+
+## 
+
+​
+
+Comparison
+
+| Databases| Object Storage| Data Lakes| Flat Files| Applications  
+---|---|---|---|---|---  
+**Data location**|  Data is extracted| Stays in your bucket| Stays in your storage| Uploaded to Evidence| Data is extracted  
+**Data updates**|  Scheduled sync| Instant (for row changes)| Scheduled sync| Re-upload file| Scheduled sync  
+**Schema changes**|  Requires re-publish| Requires re-publish| Requires re-publish| Re-upload file| Requires re-publish  
+**Data residency**|  Choose Evidence region| Your bucket location| Your storage location| Choose Evidence region| Choose Evidence region  
+  
+* * *
+
+## 
+
+​
+
+Storage Regions
+
+Evidence supports the following storage regions for extracted data.
+
+Region| Location  
+---|---  
+`us-central1`| Iowa, USA  
+`us-east1`| South Carolina, USA  
+`us-east4`| Virginia, USA  
+`us-east5`| Ohio, USA  
+`us-west1`| Oregon, USA  
+`us-west2`| Los Angeles, USA  
+`us-west3`| Salt Lake City, USA  
+`us-west4`| Las Vegas, USA  
+`northamerica-northeast1`| Montreal, Canada  
+`northamerica-northeast2`| Toronto, Canada  
+`europe-west2`| London, UK  
+`europe-west3`| Frankfurt, Germany  
+`europe-west4`| Eemshaven, Netherlands  
+`europe-west6`| Zurich, Switzerland  
+`europe-west8`| Milan, Italy  
+`europe-west9`| Paris, France  
+`europe-west10`| Berlin, Germany  
+`asia-south1`| Mumbai, India  
+`asia-southeast1`| Singapore  
+`asia-northeast1`| Tokyo, Japan  
+`australia-southeast1`| Sydney, Australia  
+  
+* * *
+
+## 
+
+​
+
+Create a connection
+
+(For databases only)
+
+  1. On the sources page, click New Connection
+  2. Enter the connection details for your database. Note that you require one connection per schema at this time.
+  3. Click **Test** to verify the connection is configured correctly.
+  4. Click **Save**.
+
+### 
+
+​
+
+IP Whitelisting
+
+If your database requires IP whitelisting, add the Evidence Studio IP addresses:
+    
+    
+    3.21.143.81
+    3.209.193.182
+    3.215.195.233
+    18.189.109.43
+    34.56.211.45
+    35.192.240.48
+    35.192.240.49
+    35.192.240.50
+    35.192.240.51
+    35.192.240.52
+    35.192.240.53
+    35.192.240.54
+    35.192.240.55
+    35.234.176.144
+    35.234.176.145
+    35.234.176.146
+    35.234.176.147
+    35.234.176.148
+    35.234.176.149
+    35.234.176.150
+    35.234.176.151
+    104.197.50.84
+    *.us-east4.gcp.proxy.prod.fivetran.com
+    *.us-central1.gcp.proxy.prod.fivetran.com
+    
+
+## 
+
+​
+
+Import a data source
+
+  1. On the sources page, click **New Source**.
+  2. Select the connection you just created.
+  3. Choose from the tables in the connection.
+  4. (Optional) Rename the source - this is used to reference the source in your reports.
+  5. Click **Save**.
+
+## 
+
+​
+
+Import a file
+
+  1. On the sources page, click **Upload File**.
+     * You can upload CSV, Parquet, and JSONL files.
+  2. Your file will be automatically imported, and named using a `snake_case` version of the filename.
+
+## 
+
+​
+
+Updating data
+
+You can only update uploaded **files** by reuploading them.
+
+### 
+
+​
+
+Manual refresh
+
+  1. On the sources page, click the `...` menu on the right of the source and select **Publish**.
+
+### 
+
+​
+
+Scheduled refresh
+
+  1. In the sources page, click the `...` menu on the right of the source and select **Schedule**.
+  2. Choose a refresh interval.
+     * Current refresh intervals are: 5 mins, 15 mins, 1 hour, 1 day, 1 week. Contact Evidence for custom intervals.
+  3. Click **Save**.
+
+Was this page helpful?
+
+⌘I
+
+---
+
+## Related Connectors (本地镜像映射)
+
+> Evidence Warehouse sidebar 列出的 12 个连接器,详细文档在 `data-sources/` 主题中已抓全。本地 wikilink 跳转:
+>
+> 注:Evidence Warehouse 自身是单页文档(同页 anchor 跳转),本节列出 sidebar 中具体连接器的独立文档,供 Obsidian 内交叉引用。
+
+### Databases (3)
+
+| Sidebar 名 | 本地文档 |
+|---|---|
+| Athena | [[../_sources/evidence-docs/data-sources-athena]] |
+| MotherDuck | [[../_sources/evidence-docs/data-sources-motherduck]] · [[../Direct Connectors/direct-connectors-motherduck]] |
+| Redshift | [[../_sources/evidence-docs/data-sources-redshift]] |
+
+### Object Storage (6)
+
+| Sidebar 名 | 本地文档 |
+|---|---|
+| Microsoft Azure Blob Storage | [[../_sources/evidence-docs/data-sources-abs]] |
+| BackBlaze | [[../_sources/evidence-docs/data-sources-backblaze]] |
+| Custom Bucket Provider | [[../_sources/evidence-docs/data-sources-custom]] |
+| Google Cloud Storage (GCS) | [[../_sources/evidence-docs/data-sources-gcs]] |
+| Cloudflare R2 | [[../_sources/evidence-docs/data-sources-r2]] |
+| AWS (S3) | [[../_sources/evidence-docs/data-sources-s3]] |
+
+### Data Lakes (2)
+
+| Sidebar 名 | 本地文档 |
+|---|---|
+| Delta Lake | [[../_sources/evidence-docs/data-sources-deltalake_s3]] |
+| Iceberg | [[../_sources/evidence-docs/data-sources-iceberg]] |
+
+### Flat Files (1)
+
+| Sidebar 名 | 本地文档 |
+|---|---|
+| Flat Files | [[../_sources/evidence-docs/data-sources-file]] |
+
+### 原页面 anchor 跳转 (供手动回查)
+
+- `#databases` — Databases 章节
+- `#object-storage` — Object Storage 章节
+- `#data-lakes` — Data Lakes 章节
+- `#flat-files` — Flat Files 章节

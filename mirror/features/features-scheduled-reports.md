@@ -1,0 +1,150 @@
+---
+type: external-doc
+title: Scheduled Reports
+source: https://docs.evidence.dev/features/scheduled-reports
+source_hash: 067ab4dbd2
+crawled_at: 2026-10-15T00:00:00.000Z
+tags:
+  - crawled
+  - docs
+  - evidence
+---
+
+# Scheduled Reports
+
+> 原文: <https://docs.evidence.dev/features/scheduled-reports>
+
+**Studio only** — part of [Evidence Studio](</#evidence-studio>), our hosted platform.
+
+Scheduled reports let you deliver a published report to your team on a regular cadence — or send a one-off copy on demand. Evidence is one of the business intelligence reporting tools that render each run to a PDF — a standard bi software pdf export — and deliver it by **email** to specific people or a group, or post it to a **Slack channel**. Among bi reporting platforms that support scheduled delivery, this puts recurring report distribution directly where your team already works. **What you can do:**
+
+  * Send a report to your users on a recurring schedule (daily, weekly, monthly) or as a one-off
+  * Deliver by **email** to specific users or a [group](</features/page-level-access-control#groups>), or post to a **Slack channel**
+  * Render the report **shared** (one view for everyone) or **per recipient** (each person sees their own data via [row-level security](</features/access-rules>))
+  * Let viewers subscribe themselves to a report they can access
+  * Track every run in a history view with status, trigger, and delivery results
+
+## 
+
+​
+
+Before you start
+
+The report must be **published** before it can be scheduled. See [Publishing](</publishing>) for how to publish a project.
+
+## 
+
+​
+
+Creating a schedule
+
+You can create a schedule from three places:
+
+  * **From the editor.** Open the schedule menu in the editor toolbar. The report you’re editing is used as the source automatically.
+  * **From a published report.** Open the schedule menu on a published page. Admins and developers get the full form; viewers get a simplified form to subscribe themselves (see Viewer self-subscriptions).
+  * **From the Schedules page.** Open **Schedules** in the sidebar and click **New schedule**. You’ll pick the project and page first.
+
+### 
+
+​
+
+Configuring a schedule
+
+The schedule form walks through the following:
+
+  1. **Destination** — Email or Slack. Slack only appears when your organization has a connected Slack workspace.
+  2. **Recipients** (email) — Specific users, or a [group](</features/page-level-access-control#groups>).
+  3. **Delivery** — **On a schedule** (recurring) or **Send now** (one-off).
+  4. **Schedule** — A friendly recurrence (daily, every weekday, weekly, or monthly), a time, and a timezone. Advanced schedules can use a custom cron expression.
+  5. **Format** — Page orientation, color scheme (light or dark), margins, cards, page colors, and which sections to hide. Dark reports keep the page’s theme background colors; light reports print on white by default unless “page colors” is enabled.
+  6. **Email** — Subject line and an optional personal message that accompanies the report.
+
+## 
+
+​
+
+Delivery destinations
+
+### 
+
+​
+
+Email
+
+Email is the default destination. You can schedule report email delivery to specific users or a group, set a subject, and optionally add a personal message that appears alongside the report.
+
+### 
+
+​
+
+Slack
+
+Posting a scheduled report to Slack gives your team a slack bi surface, with the report landing in the channel they already work in. To post a report to Slack, your organization must have a Slack workspace connected under **Settings → Integrations → Slack**. Then:
+
+  1. Choose **Slack** as the destination.
+  2. Select the channel to post to.
+  3. Optionally add a custom message that accompanies the report.
+
+Slack delivery always uses a **shared** render — everyone sees the same report. If the Evidence bot isn’t in any channels yet, invite it to a channel in Slack and reopen the form.
+
+## 
+
+​
+
+Render modes
+
+### 
+
+​
+
+Shared
+
+One runtime user’s view of the report is rendered and sent to all recipients. Choose which user’s data access to render with.
+
+### 
+
+​
+
+Per recipient
+
+Each recipient receives the report rendered with their own data access, filtered by [row-level access control](</features/access-rules>). This is email-only — Slack always uses a shared render.
+
+## 
+
+​
+
+Viewer self-subscriptions
+
+On a published report, viewers (non-admin roles) can subscribe themselves to a recurring schedule or send a one-off report to their own email. The report is rendered with their own data access, and only they receive it. Viewers can manage (pause, resume, delete) their own subscriptions from the schedule drawer.
+
+## 
+
+​
+
+Managing schedules
+
+The **Schedules** page lists every schedule in your organization with its name, schedule, next run, status, owner, and destination. From a schedule’s detail page you can:
+
+  * **Pause** or **resume** the schedule
+  * **Trigger** an immediate run (bypasses the schedule)
+  * **Delete** the schedule (run history is preserved)
+
+## 
+
+​
+
+Run history
+
+Every run appears in the history view with its status, trigger type (schedule, manual, or API), author, start time, duration, and delivery result. Failed deliveries surface the reason — for example a render error or a Slack post failure.
+
+## 
+
+​
+
+Unsubscribing
+
+Report emails include a one-click unsubscribe link. Recipients who click it are opted out of future sends for that report.
+
+Was this page helpful?
+
+⌘I

@@ -123,7 +123,7 @@ sudo docker exec sales-bi-core sh -c "grep -ao '.\{80\}<prop>=.{0,600\}' /usr/lo
 - `x_sort="data"` 依赖查询顺序 → **在 chart wrapper 下不可靠**(外层 GROUP BY 打乱),别用。
 - `x_sort=["A","B","C"]` = 固定类别顺序(适合枚举固定的系列)。
 - ⚠️ `order` 的列名要用**源 SQL 的输出别名**(不是中文原列名)。
-- 官方文档镜像:`E:/obsidian/evidence/components/Charts/components-bar_chart.md`
+- 官方文档镜像:`mirror/components/Charts/components-bar_chart.md`
   (含 "Sorting by Value" / "Custom Category Order" 两节)。
 - **表格组件没有这个问题**(无 wrapper 的 GROUP BY)→ 明细表一直按 `ORDER BY "销售总额" DESC` 正确排序。
 

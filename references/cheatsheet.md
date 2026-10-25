@@ -122,6 +122,8 @@
 
 ## 10. 服务器路径快查
 
+> ⚠️ 下表是**作者本机**路径,仅供追溯;远程安装者以 `mirror/` + `templates/` 为准。
+
 | 用途 | 路径 |
 |---|---|
 | Core workdir | `/opt/sales-bi/evidence-core/` |
@@ -191,6 +193,8 @@
 
 ## 15. 调研 / 沉淀入口
 
+> ⚠️ 下列 vault 路径是**作者本机**的;远程安装者用 `templates/`(随 skill 分发)建自己的 vault。
+
 - **本地 R 系列**: `E:/obsidian/evidence/_research/` (19 R, 7,150+ 行)
 - **INDEX**: `E:/obsidian/evidence/_research/INDEX.md` (入口)
 - **长期 KB**: `E:/obsidian/_knowledge_base/evidence/2026-10-product-blueprint.md`
@@ -221,6 +225,6 @@
 | line 节点标记 | 必加 `itemStyle={opacity=1}` | 默认 opacity 0,节点隐形(ch11) |
 | 跨 SQL block 引用 | WITH CTE inline 复制 logic | Core block 不共享 CTE 作用域(ch05) |
 | 改核心 page 前 | 先 `ls` prod 看真源 | git ≠ prod 源(ch05) |
-| 查具体组件 attrs | 本地 mirror `components/<Class>/components-<name>.md` | 94 组件全量(ch19) |
+| 查具体组件 attrs | 随 skill 分发的 mirror `mirror/components/<Class>/components-<name>.md` | 94 组件全量(ch19) |
 | Evidence Warehouse 详情 | 单页 anchor,连接器都在 `data-sources/` | sidebar≠sitemap(ch20) |
 | Self-host Auth 上限 | 只有 Basic Auth;RLS/SSO 全 Studio | Studio 订阅功能(ch13) |

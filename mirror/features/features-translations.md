@@ -1,0 +1,180 @@
+---
+type: external-doc
+title: Translations
+source: https://docs.evidence.dev/features/translations
+source_hash: 875bfbc6fc
+crawled_at: 2026-10-15T00:00:00.000Z
+tags:
+  - crawled
+  - docs
+  - evidence
+---
+
+# Translations
+
+> 原文: <https://docs.evidence.dev/features/translations>
+
+## 
+
+​
+
+Defining Translations
+
+Translations live in a version-controlled `translations.yaml` file at the project root, alongside [`evidence.config.yaml` and `theme.yaml`](</features/project-settings>). They apply to every page in the project — there is no per-page translations file. Translations are defined in YAML format with 2-digit language codes (e.g., `en`, `fr`, `es`, `de`) as top-level keys. ([Language Codes](<https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes>))
+    
+    
+    en:
+      revenue: 'Revenue'
+      top_products: 'Top Products'
+      langcode: 'en'
+    fr:
+      revenue: "Chiffre d'affaires"
+      top_products: 'Meilleurs produits'
+      langcode: 'fr'
+    
+
+The yaml structure follows [i18next conventions](<https://www.i18next.com/translation-function/essentials>) for each language.
+
+### 
+
+​
+
+Nested Translations
+
+You can organize translations into groups:
+    
+    
+    en:
+      metrics:
+        revenue: 'Revenue'
+        customers: 'Customers'
+      categories:
+        electronics: 'Electronics'
+        clothing: 'Clothing'
+    fr:
+      metrics:
+        revenue: "Chiffre d'affaires"
+        customers: 'Clients'
+      categories:
+        electronics: 'Électronique'
+        clothing: 'Vêtements'
+    
+
+### 
+
+​
+
+Reusing Translations
+
+Translations support [i18next nesting syntax](<https://www.i18next.com/translation-function/nesting>) for reusing translations within other translations:
+    
+    
+    en:
+      revenue: 'Revenue'
+      report_title: 'Q4 $t(revenue) Report'
+    fr:
+      revenue: "Chiffre d'affaires"
+      report_title: 'Rapport $t(revenue) T4'
+    
+
+When rendered, `$translations.report_title` becomes “Q4 Revenue Report” in English or “Rapport Chiffre d’affaires T4” in French.
+
+## 
+
+​
+
+Using Translations in Pages
+
+Translations are accessible via the special `$translations` variable.
+    
+    
+    {% $translations.revenue %}
+    
+
+### 
+
+​
+
+Inline in Text
+    
+    
+    # {% $translations.revenue %} Dashboard
+    
+
+### 
+
+​
+
+In Component Attributes
+    
+    
+    {% big_value
+      data="daily_orders"
+      title=$translations.revenue
+      value="sum(total_sales)"
+      fmt="usd"
+    /%}
+    
+
+### 
+
+​
+
+Templated in Strings
+    
+    
+    {% line_chart
+      data="daily_orders"
+      title="{{ $translations.revenue }} from {{ $translations.top_products }}"
+      x="order_date"
+      y="sum(total_sales)"
+    /%}
+    
+
+### 
+
+​
+
+In SQL
+    
+    
+    ```sql home_sales
+    select
+        label_{{ $translations.langcode }} as local_label
+    from description
+    ```
+    
+
+### 
+
+​
+
+Using Translations Inside SQL String Literals
+
+Translation values often contain apostrophes (`d'affaires`, `l'offre`, `chiffre d'affaires`). Interpolating them raw into a `'…'` SQL string literal closes the literal early and the warehouse rejects the query. Use the `.sql` accessor in that position — Evidence escapes the value using the target warehouse’s own string-literal rules (doubled quote `''` on Postgres, DuckDB, ClickHouse, Snowflake; backslash-escaped `\'` on BigQuery, Databricks):
+    
+    
+    ```sql member_paid_offerings
+    select count(*) from t
+    where section = '{{ $translations.section_name.sql }}'
+    ```
+    
+
+Given a French value `Offre d'adhérents`:
+
+  * On Postgres / DuckDB / ClickHouse / Snowflake: `where section = 'Offre d''adhérents'`
+  * On BigQuery / Databricks: `where section = 'Offre d\'adhérents'`
+
+Both parse back to the same string (`Offre d'adhérents`) — the escape is SQL syntax only, never text the reader sees. Use `.sql` **only** inside a single-quoted SQL string literal. Elsewhere — plain text, headings, identifier concatenation like `label_{{ $translations.langcode }}` — the bare form is correct and `.sql` would incorrectly rewrite apostrophes that were never inside a SQL literal.
+
+## 
+
+​
+
+Fallback Behavior
+
+If a translation key is missing for the selected language, it will fall back to English (`en`) if available.
+
+Was this page helpful?
+
+⌘I

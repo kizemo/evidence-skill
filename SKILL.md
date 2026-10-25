@@ -15,15 +15,15 @@ triggers:
 mutating: true
 brain_first: exempt
 when_to_use: "Evidence BI Core 2026 pages on bi.jury.xin."
-version: 0.3.1
+version: 0.3.2
 ---
 
 # Evidence Core 2026 — Sales BI
 
 > **改完必验收 3-piece(SQL 直查 + Playwright 真渲染 + 像素采样)——「配置对了」不等于「渲染对了」。**
 
-**Source**: `E:/obsidian/evidence/` + `_research/`(19 R 系列)+ GBrain;契约以 **prod 二进制实证**为准,不采信文档推测。
-**Generated**: 2026-10-13 初始 → 2026-10-14 fold-in(R1-R21)→ 2026-10-21 v0.3(补 ch21 报表页 UI 契约)→ **2026-10-25 v0.3.1(token 瘦身,index/load 降 ~40%)**
+**Source**: `mirror/`(docs.evidence.dev 公开文档镜像,137 页)+ `templates/` + GBrain;契约以 **prod 二进制实证**为准,不采信文档推测。作者本机原始 vault = `E:/obsidian/evidence/`。
+**Generated**: 2026-10-13 初始 → 2026-10-14 fold-in(R1-R21)→ 2026-10-21 v0.3(补 ch21 报表页 UI 契约)→ 2026-10-25 v0.3.1(token 瘦身)→ **v0.3.2(公开文档镜像 mirror/ 随 skill 分发,远程安装自包含)**
 
 ## When to use / NOT
 
@@ -52,6 +52,8 @@ version: 0.3.1
 | `references/frameworks.md` | 需要解释"为什么" |
 | `references/topic-index.md` | 80+ 主题 → 章映射,grep 不到时 |
 | `references/protocol.md` | 交付答案格式 · 出错先查 |
+| `mirror/` | 94 组件原文 + 8 类公开文档镜像(随 skill 分发,离线可查) |
+| `templates/` | 踩坑/调研/决策 3 个写回模板(复制到你的 vault `_playbook/`) |
 
 ## Scope & Limits
 
@@ -87,12 +89,12 @@ version: 0.3.1
 
 | 触发 | 立即做 | 模板 |
 |---|---|---|
-| 切 prod / 升级失败 / ≥2 次重试未修 | 写 `E:/obsidian/evidence/YYYY-MM-DD-bug-<short>.md` | postmortem 4 section |
-| 新技术 / 新工具 / 重大变更前调研 | 写 `E:/obsidian/evidence/_research/R<NN>-<topic>.md` | R 系列 7 section |
-| 不可逆 / ≥1 月影响决策 | 写 `E:/obsidian/evidence/_decisions/YYYY-MM-DD-<short>.md` | ADR 6 section |
+| 切 prod / 升级失败 / ≥2 次重试未修 | 写 `<vault>/YYYY-MM-DD-bug-<short>.md` | `templates/踩坑模板.md` |
+| 新技术 / 新工具 / 重大变更前调研 | 写 `<vault>/_research/R<NN>-<topic>.md` | `templates/调研模板.md` |
+| 不可逆 / ≥1 月影响决策 | 写 `<vault>/_decisions/YYYY-MM-DD-<short>.md` | `templates/决策模板.md` |
 | 组件契约新发现 | 补 `chapters/ch21-*.md`(图表/表格契约) | 契约表 + 踩坑表 |
 | 完成后(可选) | `gbrain remember fact="..." entity=projects/sales-bi` | — |
 
-**模板位置**:`E:/obsidian/evidence/_playbook/`(踩坑/调研/决策 3 个模板)+ `_README.md` 索引。
+**模板位置**:`templates/`(随 skill 分发;复制到你的 vault `_playbook/` 即可用,模板里的 `../_research/` 是相对**你的 vault** 的路径)。作者本机 vault = `E:/obsidian/evidence/`。
 **门槛**(满足 ≥2 条才写):不可逆 / 影响 ≥1 月 / 多个合理方案 / 未来 agent 重做必须知道原因。
 **周回写**:每周五或下次 session 开头自审 3 问 —— 这周有什么值得沉淀?属踩坑/调研/决策哪类?有 → 填模板。

@@ -1,0 +1,108 @@
+---
+type: external-doc
+title: Project Settings
+source: https://docs.evidence.dev/features/project-settings
+source_hash: 5368582998
+crawled_at: 2026-10-15T00:00:00.000Z
+tags:
+  - crawled
+  - docs
+  - evidence
+---
+
+# Project Settings
+
+> 原文: <https://docs.evidence.dev/features/project-settings>
+
+A project’s settings live in version-controlled files at the project root, alongside your content:
+
+  * **`evidence.config.yaml`** — project name, the pages directory, and default date and layout settings.
+  * **`theme.yaml`** — the project’s [theme](</features/themes>) (colors, palettes, and scales).
+
+Both ship through the same git workflow as your pages, so settings are reviewable in pull requests and roll back the same way your content does. Individual pages can override layout and theme settings in their [page settings](</features/page-settings>).
+
+## 
+
+​
+
+`evidence.config.yaml`
+
+This file lives at the project root. Every key is optional.
+    
+    
+    # Evidence Project Configuration
+    # Docs: https://docs.evidence.studio/features/project-settings
+    
+    project:
+      name: 'My Project'
+      evidence: '0.4.4'
+    
+    pages: ./pages
+    
+    date:
+      first_day_of_week: monday
+      default_date_range_end:
+        type: relative
+        days_ago: 1
+    
+    layout:
+      page_width: full
+      cards: true
+      table_of_contents: true
+      auto_refresh: 300000
+    
+    directories:
+      pages/reports:
+        title: 'Quarterly Reports'
+    
+
+Key| Type| Description  
+---|---|---  
+`project.name`| string| The project’s display name.  
+`project.evidence`| string| The Evidence platform version. Populated for you; you don’t normally edit it.  
+`pages`| string| The directory that holds your pages, partials, and queries. Defaults to `./pages`.  
+`date.first_day_of_week`| `sunday` | `monday`| The day weeks start on for week grains, calendars, and weekly [reporting periods](</features/page-settings#workflow-period>). Defaults to `sunday`.  
+`date.default_date_range_end`| object| The default “end” of relative date ranges, and the date [reporting periods](</features/page-settings#workflow-period>) count as “now”. See the accepted values below.  
+`layout.page_width`| `article` | `full`| Default page width — `article` (centered, limited width) or `full` (full browser width).  
+`layout.cards`| boolean| Wrap each component in a card (border + shadow) for a dashboard look.  
+`layout.table_of_contents`| boolean| Show the table-of-contents sidebar, generated from page headings.  
+`layout.auto_refresh`| number (ms)| How often the page re-runs its queries, in milliseconds. Omit (or `0`) to disable.  
+`directories`| map| Optional display titles for folders in the navigation, keyed by folder path. See Directory titles below.  
+  
+`date.default_date_range_end` is one of:
+
+  * `{ type: today }` — ranges end today.
+  * `{ type: relative, days_ago: <n> }` — ranges end `n` days before today (e.g. `days_ago: 1` to exclude an incomplete current day).
+  * `{ type: custom_sql, sql: '<expression>' }` — a SQL expression that evaluates to the end date.
+
+Each `layout` key sets the project-wide default; pages override them in their [page settings](</features/page-settings>).
+
+### 
+
+​
+
+Directory titles
+
+By default the navigation shows a prettified version of the folder name — `pages/quarterly-reports` shows as **Quarterly Reports**. To show a different label, add an entry under `directories`, keyed by the folder’s path from the project root, with a `title` (the same key pages use in their [page settings](</features/page-settings>)):
+    
+    
+    directories:
+      pages/reports:
+        title: 'Quarterly Reports'
+    
+
+  * `title` only changes the **display label** in the rendered navigation (the published site and preview) — it does not rename the folder or change its URL.
+  * The editor sidebar always shows the actual folder name (the slug), since that’s what exists in git.
+  * The label is derived from the folder’s current slug, so renaming the folder updates it automatically; set a `title` only when you want the published label to differ from the folder name.
+
+## 
+
+​
+
+theme.yaml
+
+`theme.yaml` defines the project’s theme — chart colors, palettes, and color scales — and lives at the project root next to `evidence.config.yaml`. See [Themes](</features/themes>) for the full file structure, what each setting does, and how theme inheritance works.
+
+Was this page helpful?
+
+⌘I

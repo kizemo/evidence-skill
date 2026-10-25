@@ -1,25 +1,25 @@
 # Chapter 19: Components Full Reference (94 个组件全量索引)
 
 > **R3 升级版 · 2026-10-15 抓取全量**
-> 源数据: `E:/obsidian/evidence/components/{Values,Tables,Charts,Maps,Inputs,Custom,UI,Logic}/` — sitemap 94/94 全覆盖
-> 索引入口: `E:/obsidian/evidence/_sources/evidence-docs/_INDEX.md` (`### components (94 页)` 段)
+> 源数据: `mirror/components/{Values,Tables,Charts,Maps,Inputs,Custom,UI,Logic}/` — 随 skill 分发的公开文档镜像,sitemap 94/94 全覆盖
+> 索引入口: `mirror/README.md`(8 大类 + 抓取时间 + 上游出处)
 
 ## Core Idea
 
-docs.evidence.dev/components/ 共 **94 个文档页**,sidebar 导航分 8 大类(V/T/C/M/I/C-UI/L)。每页都含 Attributes + Examples + 可用日期变量,本地镜像保留原文以供 IDE 实时校验 / 中文 schema 适配。
+docs.evidence.dev/components/ 共 **94 个文档页**,sidebar 导航分 8 大类(V/T/C/M/I/C-UI/L)。每页都含 Attributes + Examples + 可用日期变量,随 skill 分发的 mirror 保留原文以供 IDE 实时校验 / 中文 schema 适配。
 
 ## 8 大类速览
 
 | 类 | 页数 | 用途 | 本地路径 |
 |---|---|---|---|
-| **Values** | 5 | KPI 大数字、变化量、热力格 | `components/Values/` |
-| **Tables** | 4 | 表格、维度、指标、透视 | `components/Tables/` |
-| **Charts** | 29 | 20 完整图表 + 6 series/layer + 3 reference marker | `components/Charts/` |
-| **Maps** | 5 | 自定义地图 + 3 layer | `components/Maps/` |
-| **Inputs** | 16 | 下拉、滑块、日期、过滤等 | `components/Inputs/` |
-| **Custom** | 1 | Html 原生块 | `components/Custom/` |
-| **UI** | 30 | Accordion、Callout、Image、Link、Modal、Note 等 | `components/UI/` |
-| **Logic** | 4 | If / Else If / Else / Repeat | `components/Logic/` |
+| **Values** | 5 | KPI 大数字、变化量、热力格 | `mirror/components/Values/` |
+| **Tables** | 4 | 表格、维度、指标、透视 | `mirror/components/Tables/` |
+| **Charts** | 29 | 20 完整图表 + 6 series/layer + 3 reference marker | `mirror/components/Charts/` |
+| **Maps** | 5 | 自定义地图 + 3 layer | `mirror/components/Maps/` |
+| **Inputs** | 16 | 下拉、滑块、日期、过滤等 | `mirror/components/Inputs/` |
+| **Custom** | 1 | Html 原生块 | `mirror/components/Custom/` |
+| **UI** | 30 | Accordion、Callout、Image、Link、Modal、Note 等 | `mirror/components/UI/` |
+| **Logic** | 4 | If / Else If / Else / Repeat | `mirror/components/Logic/` |
 | **总计** | **94** | sitemap 全覆盖 | — |
 
 ## Full Component List (94)
@@ -75,16 +75,16 @@ docs.evidence.dev/components/ 共 **94 个文档页**,sidebar 导航分 8 大类
 
 | 任务 | 推荐组件 | 详见本地 |
 |---|---|---|
-| KPI 大数字 + 变化 | `big_value` + `delta` | `components/Values/` |
-| 趋势曲线 (date x) | `line_chart` | `components/Charts/components-line_chart.md` |
-| 类别对比 (cat x) | `bar_chart` | `components/Charts/components-bar_chart.md` |
-| 多系列叠加 | `combo_chart` + `area`/`bar`/`line` | `components/Charts/components-combo_chart.md` |
-| 占比 | `pie_chart` 或 `treemap` | `components/Charts/` |
-| 地理分布 | `map` + `point_layer` | `components/Maps/` |
-| 中文列表格 | `table` + `format_titles=false` | `components/Tables/components-table.md` + ch05 |
-| 用户交互过滤 | `dropdown` / `period_selector` | `components/Inputs/` |
-| 条件显示 | `if` / `else` | `components/Logic/` |
-| 隐藏 markdown 残留 / 自定义 | `html` + `partial` | `components/Custom/components-html.md` + ch15 |
+| KPI 大数字 + 变化 | `big_value` + `delta` | `mirror/components/Values/` |
+| 趋势曲线 (date x) | `line_chart` | `mirror/components/Charts/components-line_chart.md` |
+| 类别对比 (cat x) | `bar_chart` | `mirror/components/Charts/components-bar_chart.md` |
+| 多系列叠加 | `combo_chart` + `area`/`bar`/`line` | `mirror/components/Charts/components-combo_chart.md` |
+| 占比 | `pie_chart` 或 `treemap` | `mirror/components/Charts/` |
+| 地理分布 | `map` + `point_layer` | `mirror/components/Maps/` |
+| 中文列表格 | `table` + `format_titles=false` | `mirror/components/Tables/components-table.md` + ch05 |
+| 用户交互过滤 | `dropdown` / `period_selector` | `mirror/components/Inputs/` |
+| 条件显示 | `if` / `else` | `mirror/components/Logic/` |
+| 隐藏 markdown 残留 / 自定义 | `html` + `partial` | `mirror/components/Custom/components-html.md` + ch15 |
 
 ## Anti-patterns (新发现的,基于 94 页全量)
 
@@ -103,7 +103,7 @@ docs.evidence.dev/components/ 共 **94 个文档页**,sidebar 导航分 8 大类
 
 ## Reference Links
 
-- 本地 mirror 索引: `E:/obsidian/evidence/_sources/evidence-docs/_INDEX.md` (`### components (94 页)`)
+- mirror 索引: `mirror/README.md`(8 大类 + 抓取时间 + 上游出处)
 - 原文 sitemap: <https://docs.evidence.dev/sitemap.xml> (153 URL, 94 在 `/components/`)
 - 框架语义: ch11 (Components 7 大类 Framework)
 - 中文列陷阱: ch05 (SQL Anti-patterns)

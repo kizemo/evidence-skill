@@ -1,0 +1,231 @@
+---
+type: external-doc
+title: Line
+source: https://docs.evidence.dev/components/line
+source_hash: 78765428bf
+crawled_at: 2026-10-15T00:00:00.000Z
+tags:
+  - crawled
+  - docs
+  - evidence
+---
+
+# Line
+
+> 原文: <https://docs.evidence.dev/components/line>
+
+{% combo_chart data="demo.daily_orders" x="date" date_grain="month" %}
+        {% line y="sum(total_sales)" /%}
+    {% /combo_chart %}
+    
+
+## 
+
+​
+
+Examples
+
+### 
+
+​
+
+Basic Line Series
+    
+    
+    {% combo_chart data="demo.daily_orders" x="date" date_grain="month" %}
+        {% line y="sum(total_sales)" /%}
+    {% /combo_chart %}
+    
+
+### 
+
+​
+
+Styled Line
+    
+    
+    {% combo_chart data="demo.daily_orders" x="date" date_grain="month" %}
+        {% line y="sum(total_sales)" options={type="dashed" width=2 markers={shape="circle"}} /%}
+    {% /combo_chart %}
+    
+
+### 
+
+​
+
+Raw ECharts overrides on a single series
+    
+    
+    {% combo_chart data="demo.daily_orders" x="date" date_grain="month" %}
+        {% line
+            y="sum(total_sales)"
+            echarts_options={
+                endLabel={ show=true }
+                markPoint={ data=[{ type="max" }, { type="min" }] }
+            }
+        /%}
+    {% /combo_chart %}
+    
+
+## 
+
+​
+
+Attributes
+
+​
+
+string
+
+Column name for y-axis. Aggregated at the parent combo_chart’s `x=`. Omit when using `metric`.
+
+​
+
+string
+
+Semantic metric name to display, from metrics/*.yaml. Use instead of the raw data/value/x/y attributes.
+
+​
+
+string
+
+Column name for series grouping
+
+​
+
+string
+
+default:"y1"
+
+The axis to render the series on**Allowed values:**
+
+  * `y1`
+  * `y2`
+
+​
+
+string
+
+Format for this series’ values. See [Value Formatting](</core-concepts/value-formatting>) for available formats.
+
+​
+
+array
+
+Extra columns to include in the tooltip on hover. Each entry is `{ value, label?, fmt?, color_by_sign?, down_is_good? }`. See the [tooltip fields guide](</components/tooltip-fields>) for examples.
+
+​
+
+options group
+
+Label each point in the series with its value**Example:**
+    
+    
+     data_labels={
+      position = "above"
+      fmt = "date"
+      size = 0
+      distance = 0
+      rotate = 0
+      color = "string"
+      border_color = "string"
+      show_overlap = true
+    }
+    
+
+**Attributes:**
+
+  * position: `string` \- Position the label relative to its data point
+    * **Allowed values:**
+      * `above`
+      * `below`
+      * `left`
+      * `right`
+      * `middle`
+  * fmt: `string` \- Format the label value. Defaults to series or axis fmt.
+    * **Allowed values:** See [Value Formatting](</core-concepts/value-formatting>) for all available formats.
+  * size: `number` \- Font size in px
+  * distance: `number` \- How far the label is from the data point
+  * rotate: `number` \- Rotate each label (degrees)
+  * color: `string` \- Change the text color of the labels
+  * border_color: `string` \- Change the border color surrounding text labels, defaults to chart background
+  * show_overlap: `boolean` \- Show labels for every point even when they overlap
+
+​
+
+options group
+
+**Example:**
+    
+    
+     options={
+      color = "string"
+      width = 0
+      type = "solid"
+      opacity = 0
+      markers = {
+        shape = "circle"
+        size = 0
+      }
+      step = "start"
+      smooth = true
+    }
+    
+
+**Attributes:**
+
+  * color: `string`
+  * width: `number` \- Width of the line
+  * type: `string`
+    * **Allowed values:**
+      * `solid`
+      * `dashed`
+      * `dotted`
+  * opacity: `number` \- Between 0 and 1
+  * markers: `options group`
+    * **Options:**
+      * shape: `string`
+        * **Allowed values:**
+          * `circle`
+          * `emptyCircle`
+          * `rect`
+          * `roundRect`
+          * `triangle`
+          * `diamond`
+          * `pin`
+          * `arrow`
+          * `none`
+          * `image://`
+          * `path://`
+      * size: `number`
+  * step: `string` \- Show a stepped line rather than a smooth line between points and control where the step happens (start, middle, or end)
+    * **Allowed values:**
+      * `start`
+      * `middle`
+      * `end`
+  * smooth: `boolean`
+
+​
+
+map
+
+Raw [ECharts series options](<https://echarts.apache.org/en/option.html#series>) deep-merged into this series only. For overrides that apply to every series on the chart, set `echarts_series_options` on the parent chart instead.**Example:**
+    
+    
+     echarts_options={
+        endLabel={ show=true }
+        markPoint={ data=[{ type="max" }, { type="min" }] }
+    }
+    
+
+## 
+
+​
+
+Allowed Parents
+
+  * [combo_chart](</components/combo_chart>)
+
+Was this page helpful?
+
+⌘I

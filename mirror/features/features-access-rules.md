@@ -1,0 +1,191 @@
+---
+type: external-doc
+title: Row Level Security
+source: https://docs.evidence.dev/features/access-rules
+source_hash: f3364e71e3
+crawled_at: 2026-10-15T00:00:00.000Z
+tags:
+  - crawled
+  - docs
+  - evidence
+---
+
+# Row Level Security
+
+> 原文: <https://docs.evidence.dev/features/access-rules>
+
+**Studio only** — part of [Evidence Studio](</#evidence-studio>), our hosted platform.
+
+Access rules are the data access control layer for your sources — they control what data each user can see, at two levels:
+
+  * **Table access** — limit who can query a table.
+  * **Row level security** — control which rows a user sees within a table.
+
+Both are managed by opening [Access Rules](<https://www.evidence.studio/settings/access-rules>) in your organization settings. Access rules apply everywhere a user’s queries run, including AI features like viewer chat and dev chat — the AI can only see data the user asking the question could access themselves. Together with table access and row level security, this gives you data governance and data security over who can see what across every report and query.
+
+To use access rules with a [Direct Connector](</evidence-warehouse#direct-connectors>), refer to that connector’s documentation.
+
+## 
+
+​
+
+Table Access
+
+A table access rule limits who can query a table. Tables without a rule can be queried by everyone in the organization. Table and schema names remain visible to everyone — the rule only restricts querying the data. Each table can have one access rule, applied in one of two ways:
+
+  * **Apply to all users** — the rule applies to everyone in the organization, except the users you add to the **Except users** list.
+  * **Apply to specific users** — the rule applies only to the users you list; everyone else can still query the table.
+
+To add a rule, open [Access Rules](<https://www.evidence.studio/settings/access-rules>) and click **Add Table Access** , then pick the table and choose how to apply it. To change a rule, click the edit icon next to the table and save your changes. To remove a rule, click the delete icon — the table becomes open to everyone again. Tables with a rule show a lock badge next to their name in the editor’s schema list.
+
+### 
+
+​
+
+Example
+
+An `employee_salaries` table holds compensation data that should only be visible to the CEO, the CFO, and the finance team.
+
+  1. Open [Access Rules](<https://www.evidence.studio/settings/access-rules>) and click **Add Table Access**.
+  2. Pick the `employee_salaries` table.
+  3. Keep **Apply to all users** on, and add `ceo@example.com`, `cfo@example.com`, and each member of the finance team to the **Except users** list.
+
+Everyone else in the organization loses access: queries against `employee_salaries` no longer return data for them, and reports built on it show them an error instead of results. New members added after the rule don’t have access to the table until you add them to the except list.
+
+## 
+
+​
+
+Row Level Security
+
+Row level security is available in Evidence Studio on the Enterprise plan.
+
+Row level security controls which rows of data a user can see in a source. You define a rule on a table and a user variable for each user; a user only sees rows where their variable matches the column named in the rule.
+
+RLS rules apply per user, through user variables — they can’t be assigned to [Groups](</features/page-level-access-control#groups>).
+
+Applying a rule to a source takes two parts:
+
+  * **A rule** — specifies which tables are affected, which column determines access, and which user variable is compared against that column.
+  * **User variables** — a value set for each user, matched against the rule’s column.
+
+A rule applies to everyone or to no one by default. When it applies to no one, you grant access to specific users yourself.
+
+**User variables can take up to 5 minutes to apply.** During this time, users can’t access any rows in tables with RLS rules.
+
+To check a rule before you rely on it, use the **Access Preview** tool: select a table and a user to see how many rows that user can access.
+
+### 
+
+​
+
+Example
+
+A `leads` table has a `sales_rep_id` column holding the id of each sales rep. You want every rep to see only their own leads.
+
+lead_name| deal_stage| sales_rep_id| sales_rep  
+---|---|---|---  
+ACME| Prospect| 1| John Doe  
+Contoso| Prospect| 2| Jane Smith  
+Fabrikam| Proposal| 2| Jane Smith  
+  
+#### 
+
+​
+
+Create a rule
+
+  * Column: `sales_rep_id`
+  * Operator: `=`
+  * User variable: `rep_id` (any name works)
+  * Apply to tables: `leads`
+
+The `IN` and `NOT IN` operators only support string user variables at this time.
+
+#### 
+
+​
+
+Create user variables
+
+  1. For John Doe:
+     * Variable: `rep_id` (must match the column above)
+     * Value: `1`
+     * Users: select `john.doe@example.com` from the dropdown
+  2. For Jane Smith:
+     * Variable: `rep_id`
+     * Value: `2`
+     * Users: select `jane.smith@example.com` from the dropdown
+
+Now John Doe sees only the rows where `sales_rep_id` is `1`, and Jane Smith only the rows where it is `2`.
+
+#### 
+
+​
+
+JSON format
+
+User variables are stored as JSON, and the value type must match the column type in your database. **String value** — for `=` operators:
+    
+    
+    "123"
+    
+
+**Numeric value** — for operators like `>`:
+    
+    
+    123
+    
+
+**Numeric array** — for `IN` operators:
+    
+    
+    [1, 23, 30]
+    
+
+**String array** — for `IN` operators:
+    
+    
+    ["abc", "true", "22"]
+    
+
+Here both `true` and `22` are stored as strings, not as a boolean or a number. **Boolean value** :
+    
+    
+    true
+    
+
+Numeric values are stored as the `UInt64` type.
+
+#### 
+
+​
+
+Access Preview
+
+Select a table and a user — for example `leads` and `john.doe@example.com` — to see their access:
+
+  * 33.3% accessible
+  * Total rows: 3
+  * User can access: 1
+  * `john.doe@example.com` is bound by an access rule
+
+### 
+
+​
+
+Restrictive rules
+
+By default, multiple rules on the same table are combined with OR — a user sees a row if it matches any of the rules. Mark a rule as **restrictive** to combine it with AND instead: a row is visible only if it matches every restrictive rule. For example, if a `sales` table has a restrictive rule on `region` and another restrictive rule on `department`, a user sees a row only when both their `region` and `department` variables match that row.
+
+## 
+
+​
+
+Pair with page level access control
+
+Access rules decide which **tables and rows** a user sees when they query; [Page Level Access Control](</features/page-level-access-control>) decides which **pages** they can open. For customer-facing reports where each customer should see only their own data, use them together: per-page access in `access.yaml`, table access rules and RLS rules on the underlying tables.
+
+Was this page helpful?
+
+⌘I

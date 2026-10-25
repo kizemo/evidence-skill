@@ -6,7 +6,7 @@
 > 来源: **2026-10-12 production cutover of bi.jury.xin (Sales BI)** + 2026-10-14 R 系列全面调研 + **2026-10-15 全站 docs 镜像(168 页)** + 2026-10-21 报表页 UI 契约(ch21)+ **2026-10-25 token 瘦身(触发成本 -42%)**。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Skill Version](https://img.shields.io/badge/version-v3.2-blue.svg)](CHANGELOG.md)
+[![Skill Version](https://img.shields.io/badge/version-v3.3-blue.svg)](CHANGELOG.md)
 [![Coverage](https://img.shields.io/badge/docs_mirror-168%20pages-green.svg)](#2026-10-15-docs-mirror-fold-in-168-页)
 [![Trigger Cost](https://img.shields.io/badge/trigger-2662→1556%20tok-orange.svg)](docs/token-efficiency-audit.md)
 
@@ -355,35 +355,39 @@ evidence-skill/
 ├── docs/
 │   ├── token-efficiency-audit.md                  # token 优化前后实测证据
 │   └── skillopt-benchmark.jsonl                   # 已复核的 16 行评测集
-└── (obsidian vault 本地镜像 — 见下)
+├── mirror/                                       # docs.evidence.dev 公开文档镜像(137 页,离线可查)
+│   ├── components/{Values,Tables,Charts,Maps,     # sidebar 8 大类,94 个组件
+│   │              Inputs,Custom,UI,Logic}/
+│   ├── features/ (14) · core-concepts/ (8)         # 页面级功能 / 架构基础
+│   ├── cli/ (3) · MCP/ (3) · self-host/ (6)        # CLI / MCP / 自托管
+│   ├── Direct Connectors/ (8)                      # 直连型连接器
+│   └── evidence-warehouse/ (1)                     # Warehouse 单页真相
+├── templates/                                    # 写回模板(复制到你的 vault `_playbook/`)
+│   ├── 踩坑模板.md · 调研模板.md · 决策模板.md
+│   └── 周回写-SOP.md
+└── (作者本机 Obsidian vault — **不随 skill 分发**,见下)
 ```
 
-### 关联 Obsidian Vault 镜像
+### 随 skill 分发 vs 不分发
 
-> **不** push 到 GitHub(私人 vault)。本地路径 `E:/obsidian/evidence/`。
+| | 内容 | 位置 | 远程安装者 |
+|---|---|---|---|
+| ✅ 分发 | docs.evidence.dev 公开文档镜像(**137 页**) | `mirror/` | ✅ 随 repo 一起拿到 —— ch19 的组件原文路径直接可达,**离线可用** |
+| ✅ 分发 | 踩坑 / 调研 / 决策 3 个写回模板 | `templates/` | ✅ 复制到自己的 vault `_playbook/` 即用 |
+| ✅ 分发 | 21 章 + 6 references 蒸馏知识 | `chapters/` `references/` | ✅ 自包含 |
+| ❌ 不分发 | 作者的个人 Obsidian vault(实战笔记 / 事故复盘 / 生产环境细节) | `E:/obsidian/evidence/` | ❌ 含生产地址与配置,**刻意不公开**;请自建 vault |
 
 ```
-E:/obsidian/evidence/
-├── README.md                                      # 项目总览
-├── 01-08 *.md                                      # 切 prod 实战笔记
-├── POSTMORTEM-3-false-success.md                  # 假成功 postmortem
-├── _sources/evidence-docs/                        # 168 页 docs mirror 索引页 + JSON
-├── _research/R1-R13 *.md                          # 12 主题 R 系列
-├── _playbook/_*.md                                # 踩坑/调研/决策模板
-├── _knowledge_base/                               # 长期 KB
-├── features/ (14) · core-concepts/ (8)            # 7 个主题独立子目录
-├── components/{Values,Tables,Charts,Maps,         # sidebar 8 大类
-│              Inputs,Custom,UI,Logic}/ (94)
-├── cli/ (3) · MCP/ (3) · self-host/ (6)
-├── Direct Connectors/ (8) · evidence-warehouse/ (1)
-└── SQL/                                           # 跨 DB FDW SQL
+mirror/                                    # 随 skill 分发 — docs.evidence.dev 公开文档镜像
+├── components/{Values,Tables,Charts,Maps, # sidebar 8 大类,94 个组件
+│              Inputs,Custom,UI,Logic}/   (94)
+├── features/ (14) · core-concepts/ (8)   # 页面级功能 / 架构基础
+├── cli/ (3) · MCP/ (3) · self-host/ (6)  # CLI / MCP / 自托管
+├── Direct Connectors/ (8)                # 直连型连接器
+└── evidence-warehouse/ (1)               # Warehouse 单页真相
 ```
 
-抓取脚本:
-- `C:/Temp/evidence_crawler.py` — BFS 起点 (`components/value` + `publishing`)
-- `C:/Temp/backfill_components.py` — sitemap 全量遍历补抓
-- `C:/Temp/build_index.py` — 生成 `_INDEX.md` 分组索引
-- `C:/Temp/rebuild_index_full.py` — 从 vault frontmatter 重建 `_index.json`
+> 抓取脚本在作者本机 `C:/Temp/`,不随 repo 分发。
 
 ---
 
@@ -443,6 +447,7 @@ E:/obsidian/evidence/
 - **v3** (2026-10-14) — R 系列 fold-in,18 章 + 19 R 沉淀
 - **v3.1** (2026-10-15) — Docs Mirror fold-in,20 章 + 168 页 mirror + R14 Evidence Warehouse 真相
 - **v3.2** (2026-10-25) — 报表页 UI 契约(ch21)+ **token 瘦身**(触发成本 2,662 → 1,556 tok,-42%);参考文件重排到 `references/`
+- **v3.3** (2026-10-25) — **公开文档镜像 `mirror/`(137 页)随 skill 分发**,远程安装自包含;写回模板 `templates/`;库密码脱敏
 
 详见 [CHANGELOG.md](CHANGELOG.md)。
 

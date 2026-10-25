@@ -2,6 +2,47 @@
 
 Skill evolution history. Format: [Keep a Changelog](https://keepachangelog.com/)
 
+## [v3.3] — 2026-10-25 — 公开文档镜像随 skill 分发(远程安装自包含)
+
+### 背景
+skill 原本把 `E:/obsidian/evidence/` 当**外部依赖**:`chapters/ch19` 的 94 个组件原文路径、
+`references/cheatsheet.md` 的「查具体组件 attrs」指针、`chapters/ch20` / `ch21` 的镜像路径
+全部指向作者本地 vault。**远程安装者拿到 skill 后这些指针全是死链** —— ch19 只给组件名 + 用途,
+完整 Attributes / Examples 在 mirror 里。
+
+### Added
+- **`mirror/`(137 页 / 1.2 MB)** —— docs.evidence.dev 公开文档镜像,随 skill 分发:
+  `components/`(94,sidebar 8 大类)· `features/`(14)· `core-concepts/`(8)· `cli/`(3)·
+  `MCP/`(3)· `self-host/`(6)· `Direct Connectors/`(8)· `evidence-warehouse/`(1)
+  + `mirror/README.md`(抓取时间 / 上游出处 / 更新方式)
+- **`templates/`(5 文件)** —— 踩坑 / 调研 / 决策 3 个写回模板 + 周回写 SOP(内部用相对路径,天然可移植)
+
+### Changed
+- `chapters/ch19` —— 18 处 `components/...` → `mirror/components/...`;头部源数据与索引入口改指 in-repo mirror
+- `chapters/ch20` / `ch21` —— 各 1 处 vault 绝对路径 → `mirror/...`
+- `references/cheatsheet.md` —— 组件 attrs 指针改指 `mirror/`;§10 / §15 加「作者本机路径」标注
+- `references/glossary.md` —— R1-R21 路径标注为「作者本机,不随 skill 分发」
+- `SKILL.md` —— Source 改指 `mirror/` + `templates/`;写回 SOP 三行路径改用 `<vault>/` 占位 + 指向模板文件;
+  References 表新增 `mirror/` / `templates/` 两行;version → 0.3.2
+- README.md / README.en.md —— 新增「随 skill 分发 vs 不分发」对照表;文件结构树补 `mirror/` 与 `templates/`
+
+### 安全
+- **库密码脱敏**:`chapters/ch02-config.md` 的 `connection.yaml` 示例里的真实库密码 → `<redacted>`。
+  该凭据自**第一个 commit `e7d2a4e`** 起就在 PUBLIC 仓库里 —— **改文件不等于撤销泄露,必须轮换该密码**。
+  host / IP / 域名保留:那是这个 skill 的主题本身(domain 已出现在 21 个文件里)。
+- **刻意不发布**:作者的个人 Obsidian vault(实战笔记 / 事故复盘 / 生产环境细节)与 `_research/`
+  (19 篇 R,含 24 处生产域名引用)。chapters 已是它们的蒸馏产物。
+
+### Verification
+- skill 内引用的 19 个 `mirror/` / `templates/` 路径:**18 个真实存在**,1 个是 ch19 头部的
+  `{Values,Tables,...}` 花括号简写(非路径)
+- 新增内容凭据扫描:`mirror/` 2 处命中均为公开文档自带示例(`MUST_CHANGE_PASSWORD = FALSE;`、
+  `EVIDENCE_BASIC_PASSWORD=changeme`),`templates/` **0 命中**
+- token 成本:index 172 tok(不变)· load 1384 → **1510 tok**(+126,新增 2 行 References + Source/Generated 改写),仍在 ~1500 预算内
+- 安装副本 `~/.claude/skills/evidence-skill/` 与 repo 同步
+
+---
+
 ## [v3.2] — 2026-10-25 — Token 效率优化 + 报表页 UI 契约 (ch21)
 
 > 本次同时把仓库追平到安装目录的实际状态 —— v3.1 之后 skill 又经历了 v0.3(2026-10-21,ch21 + 新 frontmatter)与 v0.3.1(本次,token 瘦身)两次演进,仓库此前未同步。

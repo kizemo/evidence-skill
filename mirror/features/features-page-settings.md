@@ -1,0 +1,182 @@
+---
+type: external-doc
+title: Page Settings
+source: https://docs.evidence.dev/features/page-settings
+source_hash: 640510ebd2
+crawled_at: 2026-10-15T00:00:00.000Z
+tags:
+  - crawled
+  - docs
+  - evidence
+---
+
+# Page Settings
+
+> 原文: <https://docs.evidence.dev/features/page-settings>
+
+A page’s settings live in a block of YAML **frontmatter** at the top of the file, delimited by `---`. They set the page’s title and can override the project-wide defaults (from [`evidence.config.yaml`](</features/project-settings>)) for that page only.
+    
+    
+    ---
+    title: My Page
+    page_width: full
+    cards: true
+    sidebar_position: 2
+    auto_refresh: 300000
+    ---
+    
+    # Page content here
+    
+
+Most pages only need a `title`. Add other keys to override a setting for that page; anything you leave out is inherited from the project.
+
+## 
+
+​
+
+Supported keys
+
+Key| Type| Description  
+---|---|---  
+`title`| string| The page’s display name (used in the sidebar, breadcrumbs, and tab title).  
+`page_width`| `article` | `full`| Override the project’s page width for this page.  
+`cards`| boolean| Override whether components are wrapped in cards.  
+`table_of_contents`| boolean| Override whether the table-of-contents sidebar is shown.  
+`auto_refresh`| number (ms)| Override how often the page re-runs its queries. `0` disables it.  
+`down_is_good`| boolean| Treat decreases as good for every delta on the page (`big_value`, `delta`, table delta columns). A component’s own `down_is_good` overrides it. Page-only.  
+`sidebar_position`| number| Order the page within its sidebar group (lower numbers first). Page-only — not a project default.  
+`icon`| string| The icon shown next to the page in the sidebar. Page-only.  
+`theme`| object| Per-page [theme](</features/themes>) overrides (colors, palettes, scales). See below.  
+`downloads`| boolean | object| Show or hide the download options in the published page menu. See `downloads` below.  
+`type`| `partial`| Marks the file as a [partial](</core-concepts/partials>). Only used for partials.  
+`workflow`| object| Turns the page into a periodic report. See `workflow.period` below.  
+  
+### 
+
+​
+
+Inheritance
+
+The layout keys (`page_width`, `cards`, `table_of_contents`, `auto_refresh`) override the project’s `layout` in [`evidence.config.yaml`](</features/project-settings>) for that page. `down_is_good`, `sidebar_position` and `icon` are page-only settings; they have no project-wide default.
+
+### 
+
+​
+
+`theme`
+
+Per-page theme overrides are nested under `theme:`, mirroring the structure of [`theme.yaml`](</features/project-settings#theme-yaml>). Anything you set here overrides the project theme for this page only; anything you leave out is inherited.
+    
+    
+    ---
+    title: Revenue
+    theme:
+      colors:
+        base:
+          light: '#ffffff'
+          dark: '#0b1020'
+      colorPalettes:
+        default:
+          light: ['#154886', '#45a1bf']
+    ---
+    
+
+### 
+
+​
+
+`downloads`
+
+Controls the **Download PDF** , **Download Image** , and **Download Data** options in the published page’s menu. All three are shown by default. `downloads: false` hides all three:
+    
+    
+    ---
+    title: Board Pack
+    downloads: false
+    ---
+    
+
+To hide specific options, list them. Options you leave out stay visible:
+    
+    
+    ---
+    title: Board Pack
+    downloads:
+      pdf: false
+    ---
+    
+
+Key| Type| Description  
+---|---|---  
+`pdf`| boolean| Show **Download PDF**. Also controls the `Cmd/Ctrl`+`P` shortcut.  
+`image`| boolean| Show **Download Image**.  
+`data`| boolean| Show **Download Data**.  
+  
+This hides the menu options. It doesn’t prevent other ways of saving the page, such as the browser’s own print dialog.
+
+### 
+
+​
+
+`workflow.period`
+
+Adding a `workflow.period` block turns the page into a **periodic report** : a period picker appears at the top of the page, and the selected period is available as the `period` variable.
+    
+    
+    ---
+    title: Monthly Operations Report
+    workflow:
+      period:
+        grain: month
+        periods: 12
+    ---
+    
+    # {{ period.label }} Operations Review
+    
+    ```sql monthly_orders
+    select count(*) as orders
+    from demo.daily_orders
+    where date {{ period.between }}
+    ```
+    
+
+Key| Type| Description  
+---|---|---  
+`grain`| `day` | `week` | `month` | `quarter` | `year`| The calendar period each entry covers. Defaults to `month`.  
+`periods`| number| How many periods the picker offers, between 1 and 500. Defaults to `12`.  
+  
+Only **complete** periods are offered — the period in progress never appears, so a published report doesn’t change under the reader while its period is still running. The most recent complete period is selected by default, and the selection is kept in the URL so a link points at a specific period. The picker follows the project’s [date settings](</features/project-settings>): “complete” is judged against `date.default_date_range_end` (so `days_ago: 1` shifts which period counts as finished, and a `custom_sql` end pins periods to the data actually loaded), and the `week` grain starts weeks on `date.first_day_of_week`. `period` behaves like any other [input](</core-concepts/variables#in-inputs>):
+
+Property| Example| Description  
+---|---|---  
+`period.between`| `BETWEEN toDate('2026-07-01') AND toDate('2026-07-31')`| WHERE-clause fragment for the period. The default in SQL.  
+`period.label`| `Jul 2026`| Display label. The default in markdown and column attributes.  
+`period.start`| `toDate('2026-07-01')`| First date of the period, as SQL. Use `start_label` in prose.  
+`period.end`| `toDate('2026-07-31')`| Last date of the period, inclusive, as SQL. Use `end_label` in prose.  
+`period.start_label`| `Jul 1, 2026`| First date of the period, formatted for display.  
+`period.end_label`| `Jul 31, 2026`| Last date of the period, formatted for display.  
+`period.key`| `2026-07`| Stable identifier for the period.  
+`period.grain`| `month`| The configured grain.  
+  
+`period.start` and `period.end` are SQL expressions for the active dialect — writing them in markdown prints `toDate('2026-07-01')`. Use `start_label` / `end_label` for text. To put the picker somewhere else, such as next to the page title or alongside other inputs, add a [`period_selector`](</components/period_selector>) with `id="period"`. The picker then appears there instead of at the top of the page. Its grain and periods still come from the frontmatter. A selector inside an `{% if %}` block or a component slot’s fallback content doesn’t replace the top one, since it may not render.
+    
+    
+    {% row align="center" justify="between" %}
+    # {{ period.label }} Operations Review
+    {% period_selector id="period" /%}
+    {% /row %}
+    
+
+`workflow` is reserved for reporting settings; other keys under it are ignored for now.
+
+## 
+
+​
+
+Frontmatter variables
+
+Any key that isn’t one of the settings above is treated as your own custom value and preserved as-is. This is how **page variables** are defined — in the same frontmatter block, alongside your page settings — and then referenced elsewhere on the page with `{{ $my_var }}`. See [Variables → In Frontmatter](</core-concepts/variables#in-frontmatter>).
+
+Was this page helpful?
+
+⌘I

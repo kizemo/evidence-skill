@@ -114,7 +114,7 @@
 - **raw table** — 原始表,`erp.erp_result.daily_store_*` / `daily_sku_*`。列名 `"店铺"`、`"订单日期"` (date)。(ch05)
 - **`relation.*does not exist` / `column.*not exist`** — SQL 错误 grep 模式。(ch09)
 - **`rows=N` / `pageSize=N` / `sort=false`** — Core v0.10.1 不支持的 table 旧 API,要删。(ch04, ch05)
-- **R1-R21 (调研系列)** — 2026-10-14 全面调研,19 个 R 系列文件,7,150+ 行,覆盖 Evidence BI 全栈 + 实战扩展。本地路径 `E:/obsidian/evidence/_research/`。(ch11-ch18)
+- **R1-R21 (调研系列)** — 2026-10-14 全面调研,19 个 R 系列文件,7,150+ 行,覆盖 Evidence BI 全栈 + 实战扩展。作者本机路径 `E:/obsidian/evidence/_research/`(不随 skill 分发)。(ch11-ch18)
 
 ## S
 

@@ -6,7 +6,7 @@
 > Source: **2026-10-12 production cutover of bi.jury.xin (Sales BI)** + 2026-10-14 R-series deep research + **2026-10-15 full-site docs mirror (168 pages)** + 2026-10-21 report-page UI contracts (ch21) + **2026-10-25 token slimming (-42% trigger cost)**.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Skill Version](https://img.shields.io/badge/version-v3.2-blue.svg)](CHANGELOG.md)
+[![Skill Version](https://img.shields.io/badge/version-v3.3-blue.svg)](CHANGELOG.md)
 [![Coverage](https://img.shields.io/badge/docs_mirror-168%20pages-green.svg)](#2026-10-15-docs-mirror-fold-in-168-pages)
 [![Trigger Cost](https://img.shields.io/badge/trigger-2662→1556%20tok-orange.svg)](docs/token-efficiency-audit.md)
 
@@ -355,35 +355,39 @@ evidence-skill/
 ├── docs/
 │   ├── token-efficiency-audit.md                  # Before/after token measurements
 │   └── skillopt-benchmark.jsonl                   # Reviewed 16-row eval set
-└── (Obsidian vault local mirror — see below)
+├── mirror/                                       # docs.evidence.dev public-docs mirror (137 pages, offline)
+│   ├── components/{Values,Tables,Charts,Maps,     # Sidebar 8 categories, 94 components
+│   │              Inputs,Custom,UI,Logic}/
+│   ├── features/ (14) · core-concepts/ (8)         # Page features / architecture basics
+│   ├── cli/ (3) · MCP/ (3) · self-host/ (6)        # CLI / MCP / self-hosting
+│   ├── Direct Connectors/ (8)                      # Direct-type connectors
+│   └── evidence-warehouse/ (1)                     # Warehouse single-page truth
+├── templates/                                    # Write-back templates (copy into your vault's `_playbook/`)
+│   ├── 踩坑模板.md · 调研模板.md · 决策模板.md
+│   └── 周回写-SOP.md
+└── (The author's local Obsidian vault — **not distributed**, see below)
 ```
 
-### Associated Obsidian Vault Mirror
+### What ships with the skill vs what doesn't
 
-> **Not** pushed to GitHub (private vault). Local path `E:/obsidian/evidence/`.
+| | Content | Where | Remote installer |
+|---|---|---|---|
+| Ships | docs.evidence.dev public-docs mirror (**137 pages**) | `mirror/` | ✅ Comes with the repo — ch19's component paths resolve directly, **works offline** |
+| Ships | 3 write-back templates (pitfall / research / decision) | `templates/` | ✅ Copy into your own vault's `_playbook/` |
+| Ships | 21 chapters + 6 references of distilled knowledge | `chapters/` `references/` | ✅ Self-contained |
+| **Doesn't ship** | The author's personal Obsidian vault (practice notes / incident write-ups / production environment details) | `E:/obsidian/evidence/` | ❌ Contains production addresses and configs, **deliberately not published** — build your own vault |
 
 ```
-E:/obsidian/evidence/
-├── README.md                                      # Project overview
-├── 01-08 *.md                                      # Cutover practice notes
-├── POSTMORTEM-3-false-success.md                  # False-success postmortem
-├── _sources/evidence-docs/                        # 168-page docs mirror index + JSON
-├── _research/R1-R13 *.md                          # 12-topic R-series
-├── _playbook/_*.md                                # Pitfall / research / decision templates
-├── _knowledge_base/                               # Long-term KB
-├── features/ (14) · core-concepts/ (8)            # 7 topic-independent subdirs
-├── components/{Values,Tables,Charts,Maps,         # Sidebar 8 categories
-│              Inputs,Custom,UI,Logic}/ (94)
-├── cli/ (3) · MCP/ (3) · self-host/ (6)
-├── Direct Connectors/ (8) · evidence-warehouse/ (1)
-└── SQL/                                           # Cross-DB FDW SQL
+mirror/                                    # Ships — docs.evidence.dev public-docs mirror
+├── components/{Values,Tables,Charts,Maps, # Sidebar 8 categories, 94 components
+│              Inputs,Custom,UI,Logic}/
+├── features/ (14) · core-concepts/ (8)   # Page features / architecture basics
+├── cli/ (3) · MCP/ (3) · self-host/ (6)  # CLI / MCP / self-hosting
+├── Direct Connectors/ (8)                # Direct-type connectors
+└── evidence-warehouse/ (1)               # Warehouse single-page truth
 ```
 
-Crawl scripts:
-- `C:/Temp/evidence_crawler.py` — BFS starting from (`components/value` + `publishing`)
-- `C:/Temp/backfill_components.py` — sitemap full-traversal backfill
-- `C:/Temp/build_index.py` — Generate `_INDEX.md` grouped index
-- `C:/Temp/rebuild_index_full.py` — Rebuild `_index.json` from vault frontmatter
+> Crawl scripts live in the author's `C:/Temp/` and are not distributed with the repo.
 
 ---
 
@@ -443,6 +447,7 @@ Crawl scripts:
 - **v3** (2026-10-14) — R-series fold-in, 18 chapters + 19 R papers
 - **v3.1** (2026-10-15) — Docs Mirror fold-in, 20 chapters + 168-page mirror + R14 Evidence Warehouse truth
 - **v3.2** (2026-10-25) — Report-page UI contracts (ch21) + **token slimming** (2,662 → 1,556 tok per trigger, -42%); reference files re-laid-out into `references/`
+- **v3.3** (2026-10-25) — **Public-docs mirror `mirror/` (137 pages) now ships with the skill** so remote installs are self-contained; write-back templates `templates/`; DB password redacted
 
 See [CHANGELOG.md](CHANGELOG.md).
 

@@ -1,7 +1,7 @@
 # Chapter 20: Evidence Warehouse 真相 — Single-Page + Anchor 真相
 
 > **R14 新增 · 2026-10-15**
-> 源: `E:/obsidian/evidence/evidence-warehouse/evidence-warehouse.md` (11894 chars)
+> 源: `mirror/evidence-warehouse/evidence-warehouse.md` (11894 chars)
 > 关键发现: sidebar 14 项是 **单页 anchor**,**所有连接器都在 `data-sources/` 主题中独立成页**
 
 ## Core Idea
@@ -71,7 +71,7 @@ Mintlify 文档站的 sidebar 是**纯展示**,可能:
 
 ## Reference Links
 
-- 本地仓库主页: `E:/obsidian/evidence/evidence-warehouse/evidence-warehouse.md` (含 "Related Connectors" 章节)
+- 本地仓库主页: `mirror/evidence-warehouse/evidence-warehouse.md` (含 "Related Connectors" 章节)
 - 原始页面: <https://docs.evidence.dev/evidence-warehouse>
 - 验证脚本: `C:/Temp/probe_warehouse.py` + `C:/Temp/inspect_warehouse3.py`
 - 连接器详情: `data-sources/_sources/evidence-docs/` (28 页)

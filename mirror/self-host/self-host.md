@@ -1,0 +1,104 @@
+---
+type: external-doc
+title: Self Host
+source: https://docs.evidence.dev/self-host
+source_hash: 3cd4d0a374
+crawled_at: 2026-10-15T00:00:00.000Z
+tags:
+  - crawled
+  - docs
+  - evidence
+---
+
+# Self Host
+
+> 原文: <https://docs.evidence.dev/self-host>
+
+Evidence projects can be self-hosted with the official [Docker image](<https://hub.docker.com/r/evidencedev/serve>). The image runs [`evidence serve`](</cli/commands#evidence-serve>), which is similar to `evidence dev` but hardened as a production server. Self-hosted projects _must_ use a direct connector (configured in [`connection.yaml`](</cli/connections>)). Docker containers can run on many platforms, major cloud providers or your own machine. See the below guides for some tested options:
+
+  * [Vercel](</self-host/vercel>)
+  * [Render](</self-host/render>)
+  * [Fly.io](</self-host/fly>)
+  * [Railway](</self-host/railway>)
+
+## 
+
+​
+
+Should you self host?
+
+Self hosting is appropriate if:
+
+  1. Your organization requires data does not leave your infrastructure
+  2. You have a hobby project and do not want to pay for a managed service
+
+However, you should be aware that there are tradeoffs associated with self hosting Evidence projects:
+
+  * Several platform features (e.g. User Auth, Access Controls, Evidence Agents) are not built in
+  * There are no platform fees, but you will incur costs from infrastructure and maintenance
+  * You need to handle security, monitoring, and scaling on your own
+
+## 
+
+​
+
+Generic Docker Deployment
+
+Details may differ, but these steps are required for all Docker deployments.
+
+  1. Add a `Dockerfile`:
+         
+         FROM evidencedev/serve:latest
+         COPY --chown=evidence:evidence . /project
+         
+
+  2. Move secrets out of `connection.yaml`, replacing them with `${VAR}` environment references
+  3. Commit `connection.yaml` (it is gitignored by default)
+  4. Add environment variables
+
+Env Var| Purpose| Required?  
+---|---|---  
+`EVIDENCE_BASIC_USER`| HTTP Basic Auth username| Yes*  
+`EVIDENCE_BASIC_PASSWORD`| HTTP Basic Auth password| Yes*  
+`${VAR}` references| All variables referenced in `connection.yaml`| Yes  
+`EVIDENCE_AUTH_DISABLED`| Skip auth entirely on trusted private networks| -  
+`PORT`| Port the server listens on (default: 3000)| -  
+`EVIDENCE_TELEMETRY_DISABLED`| Turn off the anonymous startup event and daily heartbeat ([details](</cli#telemetry>))| -  
+  
+* Unless auth disabled
+  5. Start the server
+
+## 
+
+​
+
+Self Host vs. Evidence Studio
+
+Self-hosting allows you to render your SQL + markdown into interactive reports — but the Evidence Studio platform has many additional features:
+
+Feature| Self Host| Evidence Studio  
+---|---|---  
+Rendering reports| ✓| ✓  
+[Direct connectors](</cli/connections>)| ✓| ✓  
+[Evidence Warehouse](</evidence-warehouse>)| —| ✓  
+[SQL models](</core-concepts/models>)| —| ✓  
+Auth| HTTP Basic Auth| SSO with viewer, developer & admin roles  
+[Access controls](</features/page-level-access-control>)| —| ✓  
+[Row-level security](</features/row-level-security>)| —| ✓  
+Developer Agent| —| ✓  
+Viewer Agent| —| ✓  
+Web editor & real-time collaboration| —| ✓  
+[Embedded analytics](</features/embedded-analytics>)| —| ✓  
+[Studio MCP server](</mcp/studio>)| —| ✓  
+  
+## 
+
+​
+
+Authentication
+
+Self-hosted sites are protected by HTTP Basic Auth. The browser caches credentials in memory until the browser is exited (there is no logout button). To force all viewers to re-authenticate, change `EVIDENCE_BASIC_PASSWORD` and redeploy. For deployments only reachable over a trusted private network (VPN, Tailscale, internal VPC), set `EVIDENCE_AUTH_DISABLED=true` to skip authentication entirely. To authenticate users against your organization’s identity provider, deploy `evidence serve` behind an authenticating reverse proxy — see [Authentication & SSO](</self-host/authentication>).
+
+Was this page helpful?
+
+⌘I

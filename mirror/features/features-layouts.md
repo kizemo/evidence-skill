@@ -1,0 +1,122 @@
+---
+type: external-doc
+title: Layouts
+source: https://docs.evidence.dev/features/layouts
+source_hash: e10cc29c83
+crawled_at: 2026-10-15T00:00:00.000Z
+tags:
+  - crawled
+  - docs
+  - evidence
+---
+
+# Layouts
+
+> 原文: <https://docs.evidence.dev/features/layouts>
+
+Use the `Row` and `Stack` components to arrange content horizontally (`Row`) or vertically (`Stack`). These components are especially useful for building dashboards and responsive layouts. Combined with Evidence’s charts, tables, and inputs, they let you build an interactive data visualization dashboard that viewers can filter and explore.
+
+* * *
+
+## 
+
+​
+
+Row
+
+  * Arranges elements in a horizontal row.
+  * Elements will wrap to the next line if there isn’t enough space.
+  * Useful for placing charts, tables, or values side by side.
+
+### 
+
+​
+
+Props
+
+  * **align** (string, default: `stretch`): How to vertically align items. Options: `top`, `center`, `bottom`, or `stretch`.
+  * **justify** (string, default: `start`): How to place items horizontally when they leave free space. Options: `start`, `center`, `end`, or `between`.
+  * **card** (boolean, default: `false`): Show the row’s contents as a single card when card mode is on.
+  * **width** (number): The row’s width, as a percentage, when it sits inside another row.
+
+### 
+
+​
+
+How items are sized
+
+By default, items stretch to share the row’s width. Charts and tables always stretch. Inputs and big values stretch too, unless the row sets `justify` to `center`, `end` or `between`, in which case they keep their minimum width so `justify` can move them on screens at least 1024px wide and in PDFs. Buttons and text keep their natural width. Set `width` on an item to size it yourself. See [row](</components/row#how-items-are-sized>) for details.
+
+### 
+
+​
+
+Example
+    
+    
+    {% row %}
+        {% bar_chart data="demo.order_details" x="date" y="sum(unit_price * quantity)" date_grain="month" /%}
+        {% line_chart data="demo.order_details" x="date" y="sum(quantity)" date_grain="month" /%}
+        {% area_chart data="demo.order_details" x="date" y="count(order_id)" date_grain="month" /%}
+    {% /row %}
+    
+
+### 
+
+​
+
+Heading with a filter on the right
+    
+    
+    {% row align="center" justify="between" %}
+    ## Orders by category
+    {% dropdown id="category" data="demo.daily_orders" value_column="category" /%}
+    {% /row %}
+    
+
+* * *
+
+## 
+
+​
+
+Stack
+
+  * Arranges elements in a vertical stack.
+  * Useful for grouping related elements in a column within a row.
+  * Will have no effect on components that are already vertically aligned.
+
+### 
+
+​
+
+Props
+
+  * **align** (string, default: `stretch`): How to horizontally align items. Options: `left`, `center`, `right`, or `stretch`.
+
+    
+    
+    {% row %}
+        {% stack %}
+            {% bar_chart data="demo.order_details" x="date" y="sum(unit_price * quantity)" date_grain="month" /%}
+            {% line_chart data="demo.order_details" x="date" y="sum(quantity)" date_grain="month" /%}
+        {% /stack %}
+        {% table data="demo.order_details" limit=20 /%}
+    {% /row %}
+    
+
+* * *
+
+### 
+
+​
+
+Tip
+
+  * Use the `align` prop to control alignment of elements within the layout, and `justify` to move compact items such as inputs to one side.
+  * Rows wrap their elements if there isn’t enough horizontal space. This ensures that the layouts look good on all screen sizes. Each component has a default minimum width.
+  * Stacks always arrange elements vertically.
+
+Was this page helpful?
+
+⌘I

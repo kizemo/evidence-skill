@@ -1,0 +1,167 @@
+---
+type: external-doc
+title: CLI
+source: https://docs.evidence.dev/cli
+source_hash: df425f2790
+crawled_at: 2026-10-15T00:00:00.000Z
+tags:
+  - crawled
+  - docs
+  - evidence
+---
+
+# CLI
+
+> 原文: <https://docs.evidence.dev/cli>
+
+The Evidence CLI lets you run and develop Evidence projects locally from the command line. It includes a development server for previewing your reports locally as you work, commands for running queries, viewing metadata, and validating your code. If you are going to use the CLI for development, you should set up the [GitHub Integration](</features/version-control#github-integration>).
+
+## 
+
+​
+
+Install
+
+  * macOS / Linux
+
+  * Windows
+
+    
+    
+    curl -fsSL https://evidence.studio/install.sh | sh
+    
+
+Installs to `/usr/local/bin` (falls back to `~/.local/bin` if not writable).
+    
+    
+    irm https://evidence.studio/install.ps1 | iex
+    
+
+Installs to `%LOCALAPPDATA%\Evidence\bin` and adds it to your user PATH. Restart your terminal after install.
+
+Both `evidence` and `evd` commands are available after install.
+
+### 
+
+​
+
+Supported Platforms
+
+  * macOS arm64 (Apple Silicon)
+  * macOS x64 (Intel)
+  * Linux x64
+  * Linux arm64
+  * Windows x64
+
+### 
+
+​
+
+Verify Installation
+    
+    
+    evidence version
+    
+
+## 
+
+​
+
+Getting Started
+
+  1. **Create a project** in [Evidence Studio](<https://evidence.studio>) and connect it to a GitHub repo.
+  2. **Clone the repo** to your local machine.
+  3. **Log in** to your Evidence account via the CLI:
+         
+         evidence login
+         
+
+  4. **Start developing** from inside your cloned project directory:
+         
+         evidence dev
+         
+
+  5. Open a pull request on the repo. Evidence Studio will reply with a preview link. Merging the PR releases your changes.
+
+## 
+
+​
+
+Upgrade
+    
+    
+    evidence upgrade
+    
+
+The CLI checks for updates on startup. If a newer version is available, you’ll see a warning. If your version is below the minimum supported version, the CLI will require an upgrade before running.
+
+## 
+
+​
+
+Telemetry
+
+The CLI reports anonymous usage so we can tell how many people use Evidence, which commands matter, and which versions are still in the wild. Nothing about your data, queries, file paths, or repository is ever sent.
+
+### 
+
+​
+
+Opting out
+
+Any one of these turns telemetry off:
+    
+    
+    evidence telemetry disable      # persists in ~/.evd/telemetry.json
+    export EVIDENCE_TELEMETRY_DISABLED=1
+    export DO_NOT_TRACK=1           # the cross-tool convention
+    
+
+`evidence telemetry status` shows the current state and why. Telemetry is also skipped automatically on CI (`CI`, `GITHUB_ACTIONS`, `GITLAB_CI`, `CIRCLECI`, `BUILDKITE`, `TF_BUILD`, `JENKINS_URL`).
+
+### 
+
+​
+
+What is sent
+
+One `cli_command` event per invocation, one `cli_installed` event from the install script, and — for `evidence serve` only — a `serve_heartbeat` once every 24 hours so long-running deployments stay counted, plus a `serve_preflight_failed` event (with a `reason` such as `no_connection_yaml`) when `serve` refuses to start, so we can spot broken self-host deployments.
+
+Field| Example| Purpose  
+---|---|---  
+`machineId`| random UUID| Stored in `~/.evd/machine-id` on first run (or in your temp dir if home isn’t writable); counts developer machines without knowing who you are  
+`id_source`| `home` / `tmp`| Where the machine id was stored  
+`command`| `dev`| Which command ran  
+`version`| `0.9.3`| CLI version  
+`os`, `arch`| `darwin`, `arm64`| Platform mix  
+`connector`| `direct` / `managed`| Whether the project has a `connection.yaml` or uses the managed warehouse  
+`logged_in`| `false`| Whether a Studio login exists on this machine  
+`project_id`| random UUID| `telemetry.id` from `evidence.config.yaml`; counts deployments of a project rather than restarts of a container  
+`agent`| `cursor`| Set when a coding agent (Cursor, Claude Code, Codex, Gemini) is driving the CLI  
+`tty`| `true`| Whether a person is at an interactive terminal  
+`runtime`| `docker` / `bare`| Whether the CLI is running in a container  
+`first_run`| `true`| Whether this is the first run on this machine  
+`sandbox`| `false`| First run inside an agent or container; these never count as users  
+`instance_id`| random UUID| Per-process id, used only to count restarts of a deployment  
+  
+Requests carry your IP like any HTTP request; it is used for country-level geolocation only.
+
+### 
+
+​
+
+Project id
+
+`evidence init` writes a random `telemetry.id` into `evidence.config.yaml`. It identifies the project, not you or your machine, and is what lets us count a self-hosted deployment once rather than once per container restart. Delete the key to opt a project out of that count.
+
+### 
+
+​
+
+When you are logged in
+
+Commands that talk to Evidence Studio (`launch`, `link`, `publish`, `models`, and others) are authenticated API calls, and Studio records that your account and organization used the CLI, the same way it records use of the web app. Anonymous local usage is never linked to an account.
+
+Was this page helpful?
+
+⌘I

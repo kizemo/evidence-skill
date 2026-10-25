@@ -65,6 +65,9 @@ Core v0.10.1 配置两铁律:**`connection.yaml` FLAT top-level**(不是 list of
 ## Code Examples
 
 **正确 `connection.yaml`**:
+
+> ⚠️ 库密码已脱敏 —— 真实凭据只留在作者本机,不随 skill 分发。
+
 ```yaml
 type: postgres
 host: 124.223.115.201
