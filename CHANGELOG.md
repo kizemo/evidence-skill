@@ -21,21 +21,22 @@ Skill evolution history. Format: [Keep a Changelog](https://keepachangelog.com/)
 - **参考文件重排**:根目录平铺的 `cheatsheet.md` / `patterns.md` / `glossary.md` / `frameworks.md` / `topic-index.md` → `references/`(用 `git mv` 保留历史,与安装目录结构一致)
 - **章节内容追平安装目录**:ch05 159→295 行、ch08 120→161 行、ch11 54→283 行等 10 个 chapter 更新
 - **Anti-Patterns 飞轮**:5 行 → 8 行(新增 ch21 的 3 条:改 prod 页直接 scp / 图表改完看配置就说好了 / 说明写进报表页)
-- README.md / README.en.md:新增「Token 效率」章节 + 21 章目录 + 触发词同步 + 文件结构树更新
+- **Chapter Index 保留章号映射**:压成 4 行章组时保留「ch01 架构 · ch02 config · …」,agent 不用为查一个章号再读 `references/topic-index.md`(1,119 tok)—— 代价是 load +36 tok,值
+- README.md / README.en.md:新增「Token 效率」章节 + 21 章目录 + 触发词同步 + 文件结构树更新 + **60 秒上手 quick start** + 首屏准确率数字对齐实测表(**~22% → ~98%**,原文写 ~30% → ~95% 与表格自相矛盾)
 
 ### Token 实测
 
 | 层 | 优化前 | 优化后 | 降幅 |
 |---|---|---|---|
 | index | 217 tok | **172 tok** | -21% |
-| load | 2,445 tok | **1,348 tok** | **-45%** |
+| load | 2,445 tok | **1,384 tok** | **-43%** |
 | files | 13,769 tok | 14,964 tok | +9%(内容下沉,按需读才付) |
-| **触发一次合计** | **2,662 tok** | **1,520 tok** | **-43%** |
+| **触发一次合计** | **2,662 tok** | **1,556 tok** | **-42%** |
 
 口径:CJK ≈ 1 token/char,latin ≈ 1 token/3.5 chars(skill-forge `token_cost.py`,用于预算对比而非计费)。
 
 ### Verification
-- `skill-forge --scope audit-only` → `index=172tok load=1348tok`,deterministic judge `det=True`,verdict `accept`
+- `skill-forge --scope audit-only` → `index=172tok load=1384tok`,deterministic judge `det=True`,verdict `accept`
 - 内容保全 **20/20** 关键条目校验通过(TO_CHAR / force-recreate / taobao.mart / html-tags / theme.yaml / combo_chart / itemStyle / page_size / date_filter.between / legend.data / icon=path:// / WITH CTE / 3-piece / sidebar / Basic Auth / FastMCP 等)
 - `wc -w SKILL.md` = 461(≤ 1000 闸门)
 - frontmatter YAML 可解析,`description` 用块标量(RULING-5)

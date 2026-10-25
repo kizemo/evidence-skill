@@ -14,7 +14,7 @@
 | 层 | 内容 | 何时付 | 预算 | 本次 |
 |---|---|---|---|---|
 | **index** | 整个 frontmatter(YAML) | **每会话 × 每个用户**,无论是否触发 | ~100 tok | 217 → **172** |
-| **load** | SKILL.md 正文 | 每次触发 | ~5,000 tok | 2,445 → **1,348** |
+| **load** | SKILL.md 正文 | 每次触发 | ~5,000 tok | 2,445 → **1,384** |
 | **files** | `references/` `chapters/` | 只有 agent 真去读时 | 无上限 | 13,769 → 14,964 |
 
 index 层最容易被忽略 —— 它**每会话都付**,并在整个 skill 组合上累加。
@@ -26,9 +26,9 @@ index 层最容易被忽略 —— 它**每会话都付**,并在整个 skill 组
 | 层 | 优化前 | 优化后 | 降幅 |
 |---|---|---|---|
 | index | 217 tok | **172 tok** | **-21%** |
-| load | 2,445 tok | **1,348 tok** | **-45%** |
+| load | 2,445 tok | **1,384 tok** | **-43%** |
 | files | 13,769 tok | 14,964 tok | +9%(内容下沉,按需读才付) |
-| **触发一次合计** | **2,662 tok** | **1,520 tok** | **-43%** |
+| **触发一次合计** | **2,662 tok** | **1,556 tok** | **-42%** |
 
 其它指标:`SKILL.md` 156 → **98 行**;`wc -w` 891 → **461**。
 
@@ -126,7 +126,7 @@ python -m scripts.run --skill ~/.claude/skills/evidence-skill --scope audit-only
 期望输出:
 
 ```
-[phase 0] audit: root_cause=other scope=audit-only index=172tok load=1348tok
+[phase 0] audit: root_cause=other scope=audit-only index=172tok load=1384tok
 [phase 4] verify: det=True rubric-skipped spot=None accept=True
 ```
 

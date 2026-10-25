@@ -33,13 +33,13 @@ version: 0.3.1
 
 ## Chapter Index
 
-21 章按需加载;详细摘要 → `references/topic-index.md`。
+21 章按需加载;主题 → 章的完整映射见 `references/topic-index.md`。
 
-| 章组 | 覆盖 | 何时读 |
+| 章组 | 覆盖(章号 → 主题) | 何时读 |
 |---|---|---|
-| ch01-ch10 | 架构 · config · 监控 · cutover 失败 · SQL 反模式 · nginx patch · postgres_fdw · 样式 · 复盘 · 运维速查 | 动 prod 前 |
-| ch11-ch18 | 组件 80+ · 部署 3 模式 · 鉴权 · 性能 · 主题真相 · FastMCP · 升级 SOP · BI 工具选型 | 系统性设计 |
-| ch19-ch20 | 94 组件全量索引 · Evidence Warehouse 单页真相 | 找组件 / 架构 |
+| ch01-ch10 | ch01 架构 · ch02 config · ch03 监控 · ch04 cutover 失败 · ch05 SQL 反模式 · ch06 nginx patch · ch07 postgres_fdw · ch08 样式 · ch09 复盘 · ch10 运维速查 | 动 prod 前 |
+| ch11-ch18 | ch11 组件 · ch12 部署 · ch13 鉴权 · ch14 性能 · ch15 主题真相 · ch16 FastMCP · ch17 升级 SOP · ch18 BI 工具选型 | 系统性设计 |
+| ch19-ch20 | ch19 94 组件全量索引 · ch20 Evidence Warehouse 单页真相 | 找组件 / 架构 |
 | **ch21** | **报表页 UI 契约(图表 14 条 · 表格 · 页面内容 · 3-piece · A/B 变体法)** | **改报表页** |
 
 ## References(按需加载)

@@ -2,13 +2,22 @@
 
 > **English version**: see [README.en.md](README.en.md)
 >
-> 把一个 AI agent 在 **Evidence.dev / Evidence BI Core 2026** 上的工作准确度,从通用 LLM 的 ~30% 拉到 **生产级 ~95%**。
-> 来源: **2026-10-12 production cutover of bi.jury.xin (Sales BI)** + 2026-10-14 R 系列全面调研 + **2026-10-15 全站 docs 镜像(168 页)** + 2026-10-21 报表页 UI 契约(ch21)+ **2026-10-25 token 瘦身(触发成本 -43%)**。
+> 把一个 AI agent 在 **Evidence.dev / Evidence BI Core 2026** 上的工作准确度,从通用 LLM 的 **~22%** 拉到 **生产级 ~98%**(9 类真实任务 A/B 实测,见下文)。
+> 来源: **2026-10-12 production cutover of bi.jury.xin (Sales BI)** + 2026-10-14 R 系列全面调研 + **2026-10-15 全站 docs 镜像(168 页)** + 2026-10-21 报表页 UI 契约(ch21)+ **2026-10-25 token 瘦身(触发成本 -42%)**。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Skill Version](https://img.shields.io/badge/version-v3.2-blue.svg)](CHANGELOG.md)
 [![Coverage](https://img.shields.io/badge/docs_mirror-168%20pages-green.svg)](#2026-10-15-docs-mirror-fold-in-168-页)
-[![Trigger Cost](https://img.shields.io/badge/trigger-2662→1520%20tok-orange.svg)](docs/token-efficiency-audit.md)
+[![Trigger Cost](https://img.shields.io/badge/trigger-2662→1556%20tok-orange.svg)](docs/token-efficiency-audit.md)
+
+> **60 秒上手**
+>
+> ```bash
+> npx skills add https://github.com/kizemo/evidence-skill --skill evidence-skill
+> ```
+>
+> 装到 `.agents/skills/evidence-skill/`,并为 Claude Code 建 symlink(20+ 个 harness 通用)。
+> 装完直接问 agent:`"我的 Evidence 报表页图表不渲染,怎么排查?"` → 它会加载 ch21,给出 4 条「静默不渲染」契约。
 
 ---
 
@@ -184,7 +193,7 @@
 |---|---|
 | Total chapters | **21** (10 实战 + 8 R 系列 + 2 docs mirror + 1 报表页契约) |
 | Total markdown lines | ~9,200+ |
-| **触发一次的上下文成本** | **1,520 tok**(index 172 + load 1,348)— 优化前 2,662,**-43%** |
+| **触发一次的上下文成本** | **1,556 tok**(index 172 + load 1,384)— 优化前 2,662,**-42%** |
 | Obsidian 实战笔记 | 10 个 (cutover 实战) + R 系列 19 篇 (~7,150 行) + **168 页 docs mirror** |
 | Components 全量索引 | **94 个** (sitemap 全覆盖) |
 | Connector 支持 | **12 个** (Athena / Redshift / S3 / GCS / R2 / etc.) |
@@ -213,16 +222,16 @@ index 层最容易被忽略 —— 它**每会话都付**,并在整个 skill 组
 | 层 | 优化前 | 优化后 | 降幅 |
 |---|---|---|---|
 | index | 217 tok | **172 tok** | -21% |
-| load | 2,445 tok | **1,348 tok** | **-45%** |
+| load | 2,445 tok | **1,384 tok** | **-43%** |
 | files | 13,769 tok | 14,964 tok | +9%(内容下沉,按需读才付) |
-| **触发一次合计** | **2,662 tok** | **1,520 tok** | **-43%** |
+| **触发一次合计** | **2,662 tok** | **1,556 tok** | **-42%** |
 
 测量口径:CJK ≈ 1 token/char,latin ≈ 1 token/3.5 chars(估算,用于预算对比)。
 
 ### 做了什么
 
 1. **frontmatter 去重** — description 里的 `Triggers:` 散文子句删掉(9 条短语在 `triggers:` 里已有一份);`when_to_use` 压成一句市场行摘要
-2. **正文去索引化** — `Quick Decision Table`(26 行)下沉到 `references/cheatsheet.md` §16;`Chapter Index`(26 行)压成 4 行章组映射
+2. **正文去索引化** — `Quick Decision Table`(26 行)下沉到 `references/cheatsheet.md` §16;`Chapter Index`(26 行)压成 4 行章组映射(**保留「ch01 架构 · ch02 config · …」章号→主题映射**,省掉 agent 为查一个章号再读 `references/topic-index.md` 的 1,119 tok)
 3. **场景化契约外移** — `Output Format` + `When it fails` 移进 `references/protocol.md`(交付时 / 出错时才需要)
 4. **内容零丢失** — 删表前先把 ch19/ch20/ch21 的独有决策条目补进 `references/cheatsheet.md` 与 `references/topic-index.md`,20/20 关键条目校验通过
 5. **路由面不缩水** — `triggers:` 补回第 7 条 `components 全量 / evidence-warehouse 单页`(v0.3 迁移时丢的 ch19/ch20 路由)
@@ -238,7 +247,7 @@ index 层最容易被忽略 —— 它**每会话都付**,并在整个 skill 组
 ```bash
 cd ~/.claude/skills/skill-forge
 python -m scripts.run --skill ~/.claude/skills/evidence-skill --scope audit-only
-# [phase 0] audit: ... index=172tok load=1348tok
+# [phase 0] audit: ... index=172tok load=1384tok
 ```
 
 ---
@@ -433,7 +442,7 @@ E:/obsidian/evidence/
 - **v1** (2026-10-13) — 初始生成,10 章实战篇
 - **v3** (2026-10-14) — R 系列 fold-in,18 章 + 19 R 沉淀
 - **v3.1** (2026-10-15) — Docs Mirror fold-in,20 章 + 168 页 mirror + R14 Evidence Warehouse 真相
-- **v3.2** (2026-10-25) — 报表页 UI 契约(ch21)+ **token 瘦身**(触发成本 2,662 → 1,520 tok,-43%);参考文件重排到 `references/`
+- **v3.2** (2026-10-25) — 报表页 UI 契约(ch21)+ **token 瘦身**(触发成本 2,662 → 1,556 tok,-42%);参考文件重排到 `references/`
 
 详见 [CHANGELOG.md](CHANGELOG.md)。
 
@@ -443,7 +452,7 @@ E:/obsidian/evidence/
 - 13+ page 待修列名 bug(bi.jury.xin 上)
 - Browser 真渲染缺 CF Access token
 - gbrain keyless 无 semantic search,只能 keyword recall
-- gbrain 当前被另一 session 锁定(PID 864412),write 操作需先 close_owner
+- gbrain 走共享 HTTP serve(`gbrain serve --http`,端口 3131);PGLite 单写者锁意味着同一时刻只能有一个 serve,write 前先确认 serve 在跑
 - docs mirror `html2text` 转换有标题/段落空行(Mintlify 原站特性,内容完整保留)
 
 ### 升级频率
