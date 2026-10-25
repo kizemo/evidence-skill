@@ -27,6 +27,10 @@
       - `E:/obsidian/evidence/_research/`(19 R,7,150+ 行;与 ch11-ch18 重叠时以 chapter 内版本为准)
       - 验证:`gbrain stats --json`(pages 应 18 → ~200)+ `curl /health` 仍 ok
       - ⚠️ 注意:`doctor` 的 `connection` / `pglite_data_dir` 两条 warn 在共享 serve 下是**常态**(serve 正当其职持锁),不是故障
+      - 🔍 **观察项 · facts_drain**:0.60.287.0 有个上游 bug —— 自动事实抽取的 job insert 违反自己的
+        `minion_jobs.chk_attempts_order` 约束,导致 facts-absorb 任务 error。当前 `health=idle`、backlog=0
+        **不阻塞**,但 ingest 一有页面要抽 facts 就会复现。ingest 后必须核对 `facts_inserted` 是否 > 0;
+        若一直 0,先查 serve 日志的 `facts_drain_deferred`,再考虑升级到 0.60.400.0(需先评估 changelog)
 
 - [ ] **Phase C · Anti-Patterns 飞轮观察 1-2 周**
 
@@ -47,6 +51,7 @@
 | **铸 token 需独占脑** | `gbrain auth create/rescope/revoke` 都要 DB 直连 → 必须先停 serve。流程:停 serve → 铸/改 token → 重启 serve → `bootstrap harness --token` |
 | **token 重名** | `gbrain auth create bootstrap-harness` 会和旧的同名 → rescope 要 `--id <uuid>`(从 `gbrain auth list` 拿) |
 | 全库 index 合计 | 11,304 tok/会话(60 个 skill);下一个该优化的是 `long-doc-processor`(**1,516 tok**) |
+| **facts_drain 上游 bug** | gbrain 0.60.287.0 的 job insert 违反自家 `minion_jobs.chk_attempts_order` 约束 → facts-absorb 任务 error。`gbrain repair` 无对应 kind,只有升级能解。当前 health=idle / backlog=0 不阻塞 |
 
 ## 历史里程碑(已 commit,不再回看)
 
