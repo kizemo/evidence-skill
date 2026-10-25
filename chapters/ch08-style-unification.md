@@ -48,6 +48,47 @@ Sales BI Phase 1 样式统一完成:**5 个跨组统一区域**(Hero / KPI Strip
 - **❌ 改完 nginx config 不同步 git** —— 后续 phase 无法 reference 当前 live config
 - **❌ 自动化测试不传 CF Access token** —— Playwright 会被 CF 拦
 - **❌ 想改 Core 静态 CSS** —— Core 是 AOT,改 source 后必须重建 image,不在 phase 1 范围
+- **❌ 用通用 `table td { padding: X !important }` 不排除日历** —— range_calendar 也是 `<table><td>` 结构, 通用 table 规则会覆盖日历 td 自带的 `p-0`, 把 32px 日期 div 塞进窄内容区 → 日期数字溢出重叠 (2026-10-19 用户反馈); 必须加 `[role="grid"] td { padding: 0 !important }` 恢复
+
+## 日历/筛选器正确样式 (2026-10-19 沉淀)
+
+`range_calendar` 和 `dropdown` 是筛选器组件, 有特殊内部结构, 通用 CSS 规则容易误伤。正确样式方法:
+
+### 日历 (range_calendar) DOM 结构
+- 日历是 `<table role="grid">` (不是普通 table)
+- 日期 cell 是 `<td class="size-(--cell-size) p-0">`, 内部是 `<div class="size-(--cell-size) flex flex-col items-center justify-center">` (日期按钮)
+- `--cell-size` 由日历容器 class `[--cell-size:--spacing(8)]` 定义 = `calc(.25rem * 8)` = **32px**
+
+### 必加的防护规则 (避免通用规则误伤)
+
+```css
+/* 1. 日历 td 不被通用 table td padding 覆盖 (日期重叠根因) */
+[role="grid"] td {
+  padding: 0 !important;
+  border-bottom: 0 !important;
+}
+
+/* 2. 日期筛选器内部 flex-col 容器的 mb-4 归零 (与顶部 padding 对齐) */
+main [data-component-type="range_calendar"] div.mb-4 {
+  margin-bottom: 0 !important;
+}
+
+/* 3. 店铺下拉框容器 mb-4 归零 + label 垂直居中 */
+main [data-component-type="dropdown"] #bits-4 .relative.mb-4 {
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  margin-bottom: 0 !important;  /* label 居中 + 底部对齐的关键 */
+}
+```
+
+### 为什么 mb-4 必须归零
+- `div.mb-4` / `.relative.mb-4` 的 16px 下 margin 在 `align-items: center` 的 flex 布局里, 会让子元素的 margin-box 偏高, 导致 label(14px) 与下拉框按钮(36px) 视觉未居中
+- 同时 wrapper 底部多出 16px 空白, 上下 padding 不对称
+
+### 验证方法 (Playwright)
+- label 中心 = 下拉框按钮中心 (getBoundingClientRect 算 (top+bottom)/2)
+- wrapper `gapTop` ≈ `gapBottom` (上下距离相等)
 
 ## Code Examples
 

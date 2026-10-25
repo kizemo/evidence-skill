@@ -3,11 +3,12 @@
 > **中文版本**: see [README.md](README.md)
 >
 > Boost an AI agent's accuracy on **Evidence.dev / Evidence BI Core 2026** from generic-LLM **~30%** to **production-grade ~95%**.
-> Source: **2026-10-12 production cutover of bi.jury.xin (Sales BI)** + 2026-10-14 R-series deep research + **2026-10-15 full-site docs mirror (168 pages)**.
+> Source: **2026-10-12 production cutover of bi.jury.xin (Sales BI)** + 2026-10-14 R-series deep research + **2026-10-15 full-site docs mirror (168 pages)** + 2026-10-21 report-page UI contracts (ch21) + **2026-10-25 token slimming (-43% trigger cost)**.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Skill Version](https://img.shields.io/badge/version-v3.1-blue.svg)](CHANGELOG.md)
+[![Skill Version](https://img.shields.io/badge/version-v3.2-blue.svg)](CHANGELOG.md)
 [![Coverage](https://img.shields.io/badge/docs_mirror-168%20pages-green.svg)](#2026-10-15-docs-mirror-fold-in-168-pages)
+[![Trigger Cost](https://img.shields.io/badge/trigger-2662→1520%20tok-orange.svg)](docs/token-efficiency-audit.md)
 
 ---
 
@@ -19,13 +20,14 @@
 4. [**Accuracy Boost for Agents Using Evidence**](#accuracy-boost-for-agents-using-evidence) ← key section
 5. [Key Content](#key-content)
 6. [Coverage](#coverage)
-7. [How to Use](#how-to-use)
-8. [Install](#install)
-9. [File Inventory](#file-inventory)
-10. [Source](#source)
-11. [Maintenance](#maintenance)
-12. [Contributing](#contributing)
-13. [License](#license)
+7. [**Token Efficiency**](#token-efficiency--2026-10-25) ← 2026-10-25
+8. [How to Use](#how-to-use)
+9. [Install](#install)
+10. [File Inventory](#file-inventory)
+11. [Source](#source)
+12. [Maintenance](#maintenance)
+13. [Contributing](#contributing)
+14. [License](#license)
 
 ---
 
@@ -44,7 +46,7 @@ It accomplishes three things, ordered by descending importance:
 
 2. **Load production experience** — Distill bi.jury.xin's actual **2026-10-12 production cutover** into reusable chapters: 5 Critical Bugs, nginx 5-location patch, postgres_fdw cross-DB playbook, so the next agent doesn't re-tread the same path.
 
-3. **Provide complete knowledge index** — On 2026-10-15, **all 153 URLs from docs.evidence.dev sitemap** were crawled (168 pages markdown mirror), 12 topics covered, anchored to the Obsidian vault. This skill indexes them via ch19/ch20.
+3. **Provide complete knowledge index** — On 2026-10-15, **all 153 URLs from docs.evidence.dev sitemap** were crawled (168 pages markdown mirror), 12 topics covered, anchored to the Obsidian vault. This skill indexes them via ch19/ch20, plus report-page UI contracts in ch21.
 
 ---
 
@@ -84,11 +86,12 @@ After this incident, the **agent distillation strategy** (skill + Obsidian vault
 
 ### Operator's perspective
 
-- **Quick Decision Lookup**: 14 decision tables + 12-phase actionable → `cheatsheet.md`
-- **Framework Semantics**: 12 frameworks + "why" → `frameworks.md`
-- **Glossary**: 80+ key terms → `glossary.md`
-- **Patterns + Anti-patterns**: 8 patterns → `patterns.md`
-- **20 deep-dive chapters**: see table below
+- **Quick Decision Lookup**: 16 decision tables + 12-phase actionable → `references/cheatsheet.md`
+- **Framework Semantics**: 12 frameworks + "why" → `references/frameworks.md`
+- **Glossary**: 80+ key terms → `references/glossary.md`
+- **Patterns + Anti-patterns**: 8 patterns → `references/patterns.md`
+- **Delivery format / troubleshooting**: output structure + failure handling → `references/protocol.md`
+- **21 deep-dive chapters**: see table below
 
 ---
 
@@ -118,11 +121,11 @@ This is the **core value proposition** of this skill. Based on the 2026-10-12 pr
 
 2. **Anti-patterns explicitly listed** — Skill writes all known error patterns as tables (60+ entries); agent auto-greps anti-pattern table after writing.
 
-3. **Quick Decision Table pattern** — `SKILL.md` top + `cheatsheet.md` sections 1-15, one-line per decision, **3-second lookup** instead of 30-minute reasoning.
+3. **Quick Decision Table pattern** — `references/cheatsheet.md` sections 1-16, one-line per decision, **3-second lookup** instead of 30-minute reasoning. `SKILL.md` keeps only what must be in context at trigger time (anti-patterns / verification / write-back); everything else is on-demand (see [Token Efficiency](#token-efficiency--2026-10-25)).
 
 4. **Full coverage mirror** — ch19's 94-component full index + 168-page local mirror, any component question has **original text to check**, no LLM hallucination needed.
 
-5. **Single source of truth** — SKILL.md / cheatsheet.md / topic-index.md / glossary.md **cross-reference**, agent reasoning doesn't get confused by inconsistent sources.
+5. **Single source of truth** — SKILL.md / references/cheatsheet.md / references/topic-index.md / references/glossary.md **cross-reference**, agent reasoning doesn't get confused by inconsistent sources.
 
 6. **Real verification SOP** — ch09 formalizes "how to verify after fix" as 6-step flow, agent won't declare "fixed" prematurely (avoids false-success).
 
@@ -130,7 +133,7 @@ This is the **core value proposition** of this skill. Based on the 2026-10-12 pr
 
 ## Key Content
 
-### 20 Chapters (on-demand loading)
+### 21 Chapters (on-demand loading)
 
 #### Practice series (ch01-ch10) — 2026-10-12 cutover notes
 
@@ -167,14 +170,21 @@ This is the **core value proposition** of this skill. Based on the 2026-10-12 pr
 | [ch19](chapters/ch19-components-full-reference.md) | Components Full Reference | **Full index of 94 components** (by sidebar 8 categories) + Quick Decision + Anti-patterns | R3 upgrade |
 | [ch20](chapters/ch20-evidence-warehouse-truth.md) | Evidence Warehouse Truth | Single-page + 4 anchors + 12 connector → data-sources mapping | R14 |
 
+#### Report-page UI contract series (ch21) — 2026-10-21
+
+| # | Topic | Key Content | Source |
+|---|---|---|---|
+| [ch21](chapters/ch21-report-ui-contracts.md) | Report Page UI Contracts | 14 chart contracts + table `page_size` + page-content boundaries + 3-piece verification + A/B variant method | prod binary evidence |
+
 ---
 
 ## Coverage
 
 | Dimension | Count |
 |---|---|
-| Total chapters | **20** (10 practice + 8 R-series + 2 docs mirror) |
-| Total markdown lines | ~7,800+ |
+| Total chapters | **21** (10 practice + 8 R-series + 2 docs mirror + 1 report-page contract) |
+| Total markdown lines | ~9,200+ |
+| **Context cost per trigger** | **1,520 tok** (index 172 + load 1,348) — was 2,662, **-43%** |
 | Obsidian practice notes | 10 (cutover practice) + R-series 19 papers (~7,150 lines) + **168-page docs mirror** |
 | Components full index | **94** (sitemap fully covered) |
 | Connector support | **12** (Athena / Redshift / S3 / GCS / R2 / etc.) |
@@ -184,21 +194,70 @@ This is the **core value proposition** of this skill. Based on the 2026-10-12 pr
 
 ---
 
+## Token Efficiency
+
+> 2026-10-25 · Measured data in [docs/token-efficiency-audit.md](docs/token-efficiency-audit.md) (per Perplexity's *Designing, Refining, and Maintaining Agent Skills* + Anthropic `skill-creator` length conventions)
+
+An agent pays two bills when it loads a skill:
+
+| Tier | Content | When paid | Budget |
+|---|---|---|---|
+| **index** | the entire frontmatter (YAML) | **every session × every user**, triggered or not | ~100 tok |
+| **load** | the SKILL.md body | on every trigger | ~5,000 tok |
+| **files** | `references/` `chapters/` | only when the agent actually reads one | unlimited |
+
+The index tier is the easiest to miss — it is paid **every session** and stacks across the whole installed portfolio.
+
+### Measured results
+
+| Tier | Before | After | Change |
+|---|---|---|---|
+| index | 217 tok | **172 tok** | -21% |
+| load | 2,445 tok | **1,348 tok** | **-45%** |
+| files | 13,769 tok | 14,964 tok | +9% (content pushed down; paid on read) |
+| **Total per trigger** | **2,662 tok** | **1,520 tok** | **-43%** |
+
+Measurement basis: CJK ≈ 1 token/char, latin ≈ 1 token/3.5 chars (an estimate, used for budget comparison).
+
+### What changed
+
+1. **Frontmatter de-duplicated** — the prose `Triggers:` clause was removed from `description` (the same 9 phrases already lived in `triggers:`); `when_to_use` compressed to a one-line marketplace summary
+2. **Body de-indexed** — `Quick Decision Table` (26 lines) pushed down to `references/cheatsheet.md` §16; `Chapter Index` (26 lines) compressed to a 4-row chapter-group map
+3. **Scenario-scoped contracts moved out** — `Output Format` + `When it fails` moved into `references/protocol.md` (needed at delivery time / on failure, not at trigger time)
+4. **Zero content loss** — before deleting any table, the unique ch19/ch20/ch21 decision rows were first pushed into `references/cheatsheet.md` and `references/topic-index.md`; 20/20 key entries verified
+5. **Routing surface preserved** — a 7th `triggers:` entry `components 全量 / evidence-warehouse 单页` restores the ch19/ch20 routing lost during the v0.3 migration
+
+### Why index landed at 172 instead of ~100
+
+The `token_cost.py` algorithm shows: **CJK accounts for only 17 tok** of the frontmatter; the other 155 tok are YAML syntax + English prose + 7 trigger phrases. Going lower means cutting `triggers:` — that is routing capability, and cutting it means silent mis-routing.
+
+Portfolio context: `sql-skill` sits at 231 tok index, this skill at 172 tok. Across all 60 installed skills the index tier totals 11,304 tok per session, and this skill ranks 28/60 (median). The real portfolio outlier is `long-doc-processor` (1,516 tok — 9× this skill).
+
+### Re-audit
+
+```bash
+cd ~/.claude/skills/skill-forge
+python -m scripts.run --skill ~/.claude/skills/evidence-skill --scope audit-only
+# [phase 0] audit: ... index=172tok load=1348tok
+```
+
+---
+
 ## How to Use
 
 ### Auto-load triggers
 
-Skill auto-activates when these keywords appear:
+Skill auto-activates when these keywords appear (the machine-readable `triggers:` field is the single home — benchmark positives are derived from it):
 
 ```
-'evidence', 'bi.jury.xin', 'sales-bi', 'cutover',
-'connection.yaml FLAT', 'theme.yaml 5 层', 'html block',
-'mcp selfhost', 'pgbouncer', 'cloudflare access', 'bi tool selection',
-'components 全量', 'evidence-warehouse single page', 'docs mirror',
-'sidebar 不等于 sitemap'
+'evidence', 'bi.jury.xin', 'sales-bi',
+'Evidence 报表 / 页面 / 组件 / 部署',
+'combo_chart / legend / page_size / 瀑布图',
+'Evidence 升级 / MCP / FastMCP',
+'components 全量 / evidence-warehouse 单页'
 ```
 
-Full trigger list in [SKILL.md description](SKILL.md).
+Full trigger list in [SKILL.md frontmatter](SKILL.md).
 
 ### Active queries
 
@@ -250,16 +309,18 @@ ls ~/.claude/skills/evidence-skill/SKILL.md
 
 ```
 evidence-skill/
-├── SKILL.md                                       # Master entry, triggers + Quick Decision
+├── SKILL.md                                       # Master entry, triggers + anti-patterns + verification (98 lines)
 ├── README.md                                      # Chinese detailed (this fork default)
 ├── README.en.md                                   # English version
 ├── LICENSE                                        # MIT
-├── CHANGELOG.md                                   # v1 → v3.1 evolution
-├── glossary.md                                    # 80+ key terms dictionary
-├── patterns.md                                    # 8 patterns + anti-pattern table
-├── cheatsheet.md                                  # 14 decision tables (highest priority)
-├── topic-index.md                                 # 80+ topics → chapter mapping
-├── frameworks.md                                  # 12 frameworks deep dive
+├── CHANGELOG.md                                   # v1 → v3.2 evolution
+├── references/                                    # On-demand (tokens paid only when the agent reads one)
+│   ├── cheatsheet.md                              # 16 decision tables (highest priority)
+│   ├── patterns.md                                # 8 patterns + anti-pattern table
+│   ├── glossary.md                                # 80+ key terms dictionary
+│   ├── frameworks.md                              # 12 frameworks deep dive
+│   ├── topic-index.md                             # 80+ topics → chapter mapping
+│   └── protocol.md                                # Delivery output format + failure handling
 ├── chapters/
 │   ├── ch01-architecture.md                       # Practice — Architecture
 │   ├── ch02-config.md                             # Practice — Configuration
@@ -280,7 +341,11 @@ evidence-skill/
 │   ├── ch17-upgrade-mgmt.md                       # R20 — Upgrade & Change Mgmt
 │   ├── ch18-bi-tools.md                           # R10/R13 — BI Tool Comparison
 │   ├── ch19-components-full-reference.md          # **v3.1** R3-up — 94 components full
-│   └── ch20-evidence-warehouse-truth.md           # **v3.1** R14 — Warehouse single-page truth
+│   ├── ch20-evidence-warehouse-truth.md           # **v3.1** R14 — Warehouse single-page truth
+│   └── ch21-report-ui-contracts.md                # **v3.2** Report-page UI contracts (chart/table/3-piece)
+├── docs/
+│   ├── token-efficiency-audit.md                  # Before/after token measurements
+│   └── skillopt-benchmark.jsonl                   # Reviewed 16-row eval set
 └── (Obsidian vault local mirror — see below)
 ```
 
@@ -368,6 +433,7 @@ Crawl scripts:
 - **v1** (2026-10-13) — Initial generation, 10 practice chapters
 - **v3** (2026-10-14) — R-series fold-in, 18 chapters + 19 R papers
 - **v3.1** (2026-10-15) — Docs Mirror fold-in, 20 chapters + 168-page mirror + R14 Evidence Warehouse truth
+- **v3.2** (2026-10-25) — Report-page UI contracts (ch21) + **token slimming** (2,662 → 1,520 tok per trigger, -43%); reference files re-laid-out into `references/`
 
 See [CHANGELOG.md](CHANGELOG.md).
 

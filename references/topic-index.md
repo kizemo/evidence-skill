@@ -2,16 +2,10 @@
 
 > 详细内容,按需加载。SKILL.md 只列章节。
 
-### 🆕 v3.1 (2026-10-15) 增量
-- **components 全量 (94)** → **ch19**
-- **docs mirror (168 页)** → **ch19, ch20**
-- **Evidence Warehouse 真相** → **ch20**
-- **single-page anchor** → **ch20**
-- **sidebar 不等于 sitemap** → **ch20**
-
 ### A
 - **AOT binary** → ch01, ch02, ch17
 - **AGPL (Metabase)** → ch18
+- **A/B 变体实验(图表改样式)** → ch21
 - **Access Preview (Studio)** → ch13
 - **架构(40.x vs Core 2026)** → ch01
 
@@ -20,6 +14,7 @@
 - **bugs (5 critical)** → ch04
 - **BYOK (Bring Your Own Key)** → ch18
 - **`big_value` 组件** → ch11
+- **BFS + sitemap 混合遍历** → ch19, ch20
 
 ### C
 - **CF Tunnel** → ch10, ch13
@@ -27,6 +22,7 @@
 - **changelog 解读** → ch17
 - **`column "ds" does not exist`** → ch05
 - **commit 链** → ch10, ch17
+- **combo_chart 双 Y 轴** → ch11, ch21
 - **config 改完不生效** → ch02, ch17
 - **`connection.yaml` FLAT** → ch02, ch04, ch12
 - **`connectionType:postgres`** → ch02
@@ -37,6 +33,7 @@
 
 ### D
 - **date SUBSTR 陷阱** → ch05
+- **`date_filter.between`** → ch21
 - **`docker compose up -d --force-recreate`** → ch02, ch04, ch10, ch14, ch15, ch17
 - **DataTable v0.10+** → ch11
 - **declarative components** → ch11
@@ -47,8 +44,7 @@
 - **Embedded Analytics (Studio)** → ch18
 - **`{% html %}` block (2026-06-25)** → ch15
 - **ECharts (custom_echart)** → ch11
-- **Evidence Warehouse** → **ch20**, ch12
-- **Evidence.dev docs mirror** → **ch19**, **ch20**
+- **Evidence Warehouse 单页真相** → ch20
 
 ### F
 - **5 秒回滚** → ch06, ch17
@@ -73,6 +69,7 @@
 
 ### L
 - **Legacy 40.x** → ch01, ch10
+- **legend / 图例配置** → ch21
 - **local scope CTE** → ch07
 - **Lightdash (直接对手)** → ch18
 
@@ -98,12 +95,14 @@
 ### P
 - **Pentagram 编辑设计语言** → ch08, ch15
 - **Pentagram Phase 2** → ch15
-- **Playwright 真渲染** → ch08, ch09, ch10
+- **Playwright 真渲染** → ch08, ch09, ch10, ch21
 - **postgres_fdw** → ch07, ch14
 - **`project.evidence` field** → ch02, ch04
 - **proxy_pass :3002** → ch01, ch06
 - **pgbouncer session-mode** → ch14
 - **Pentagram 6+6 模式** → ch15
+- **page_size / 表格放大** → ch21
+- **prod 真源 ≠ git** → ch05
 
 ### R
 - **raw table** → ch05
@@ -112,15 +111,18 @@
 - **RLS (Studio-only)** → ch13
 - **`rows=N` / `pageSize=N` / `sort=false`** → ch04, ch05
 - **Run Query tool (MCP)** → ch16
+- **报表页 UI 契约** → ch21
 
 ### S
 - **Sales BI (sales-bi)** → ch01, ch10
 - **sandbox → direct prod evidence** → ch04, ch06, ch10
 - **silent fallback** → ch02, ch04, ch09
+- **sidebar ≠ sitemap** → ch19, ch20
 - **SSR HTML placeholder** → ch09
 - **systemd timer oneshot** → ch03
 - **sqlglot AST** → ch16
 - **Statement_timeout (PG)** → ch14
+- **SQL block 跨引用(WITH CTE inline)** → ch05
 
 ### T
 - **`taobao.mart_*` (2-segment path)** → ch07
@@ -142,6 +144,7 @@
 ### 数字
 - **2-segment path** → ch07
 - **3-segment path** → ch07
+- **3-piece 验收(SQL 直查 + Playwright + 像素采样)** → ch21, ch09
 
 ### 中文
 - **"店铺"** → ch05

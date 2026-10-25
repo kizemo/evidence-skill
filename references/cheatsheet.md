@@ -1,7 +1,7 @@
 # Cheatsheet — Evidence BI 决策快查
 
 > 一页纸决策表 — 切 / 配 / 排错 / 升级 / 性能时第一查这个。**本文件优先级最高**。
-> 覆盖: ch01-ch10 实战 + ch11-ch18 R 系列系统全貌
+> 覆盖: ch01-ch10 实战 + ch11-ch18 R 系列系统全貌 + ch19-ch21 docs mirror / 报表页 UI 契约
 
 ---
 
@@ -63,7 +63,7 @@
 | 改完 nginx config | `bash deploy/scripts/sync_nginx_config_to_git.sh` | 后续 phase 可 reference |
 | Playwright 跑 prod | 设 `CLOUDFLARE_ACCESS_TOKEN` env var + 跑 `tests/cf_access_auth.py` | CF Access 拦自动化 |
 
-## 5. Components 决策规则 (R3 + ch19 全量)
+## 5. Components 决策规则 (R3)
 
 | 触发 | 立即做 | 因为 |
 |---|---|---|
@@ -73,7 +73,6 @@
 | Checkbox 标签 | `{% toggle %}` | `/components/checkbox` URL 错位 |
 | 高级图表 (box_plot / waterfall) | `{% custom_echart %}` | 内置缺失,逃逸 ECharts |
 | URL 路径 | snake_case `/components/scatter_chart`,**不** kebab-case | Mintlify 404 模式 |
-| **94 组件全量查表** | 翻 `ch19-components-full-reference.md` 或本地 mirror | **ch19** |
 
 ## 6. Auth 决策规则 (R7)
 
@@ -194,11 +193,6 @@
 
 - **本地 R 系列**: `E:/obsidian/evidence/_research/` (19 R, 7,150+ 行)
 - **INDEX**: `E:/obsidian/evidence/_research/INDEX.md` (入口)
-- **168 页 docs mirror** (2026-10-15 全量): `E:/obsidian/evidence/_sources/evidence-docs/`
-  - INDEX: `_INDEX.md` (按 12 主题分组 + 全部 168 页列表)
-  - 8 个主题独立子目录: features/ core-concepts/ components/{8 大类}/ cli/ MCP/ self-host/ Direct Connectors/ evidence-warehouse/
-  - 抓取脚本: `C:/Temp/evidence_crawler.py` (BFS) + `C:/Temp/backfill_components.py` (sitemap 遍历)
-- **Evidence Warehouse 真相**: 单页 anchor,12 connector → data-sources 映射,见 **ch20**
 - **长期 KB**: `E:/obsidian/_knowledge_base/evidence/2026-10-product-blueprint.md`
 - **GBrain recall**:
   - `recall projects/sales-bi` — 项目卡片 + 5 facts
@@ -206,4 +200,27 @@
   - `recall concepts/postgres-fdw` — 1 fact
   - `recall companies/evidence-dev` — 1 fact
   - `search "Evidence Core 2026"` — 跨 page 关键字
-- **Skill 本体**: `~/.claude/skills/evidence-skill/` (ch01-ch20, glossary, patterns, cheatsheet, CHANGELOG)
+- **Skill 本体**: `~/.claude/skills/evidence-skill/` (ch01-ch21, glossary, patterns, cheatsheet)
+
+---
+
+## 16. 报表页 UI 契约决策 (ch21)
+
+> ch19/ch20 的组件索引与 Warehouse 真相、ch21 的报表页契约,2026-10-21 起从 SKILL.md 正文下沉到这里。
+
+| 触发 | 立即做 | 因为 |
+|---|---|---|
+| **图表静默不渲染** | 查 ch21 §1.1 四条:name 位置 / 列名 ASCII / 自闭合 / stacked | 配置合法但前端不画,无报错 |
+| **图例要显示「线+标记」** | `legend=false` + `legend.data` + `icon="path://"` | 数组**必须逗号分隔**,语法错 → 图例整块不渲染 |
+| **表格要「放大」** | 内置 Expand table 按钮;行数用 `page_size` | v0.10.1 无 `pageSize` / `rows` prop |
+| **报表页要加说明/变量表** | **不写进页面** → 放 json / memory / handoff | 页面不是文档载体(ch21 §3) |
+| **日期筛选器接 SQL** | **只用 `{{date_filter.between}}`** | `start`/`end` 只选一端时是空串 → 500(ch21 §8) |
+| **改图表样式不知对不对** | 同页多图各放一变体,一次 deploy 截图对比 | A/B 变体法(ch21 §6) |
+| **宣布成功前** | 3-piece:SQL 直查 + Playwright + 像素采样 | 「配置对了」≠「渲染对了」(ch21 §5) |
+| combo_chart 双 Y 轴 | `stacked=false` + `axis="y2"` + 多 key newline | 双轴必关堆叠(ch11) |
+| line 节点标记 | 必加 `itemStyle={opacity=1}` | 默认 opacity 0,节点隐形(ch11) |
+| 跨 SQL block 引用 | WITH CTE inline 复制 logic | Core block 不共享 CTE 作用域(ch05) |
+| 改核心 page 前 | 先 `ls` prod 看真源 | git ≠ prod 源(ch05) |
+| 查具体组件 attrs | 本地 mirror `components/<Class>/components-<name>.md` | 94 组件全量(ch19) |
+| Evidence Warehouse 详情 | 单页 anchor,连接器都在 `data-sources/` | sidebar≠sitemap(ch20) |
+| Self-host Auth 上限 | 只有 Basic Auth;RLS/SSO 全 Studio | Studio 订阅功能(ch13) |

@@ -3,11 +3,12 @@
 > **English version**: see [README.en.md](README.en.md)
 >
 > 把一个 AI agent 在 **Evidence.dev / Evidence BI Core 2026** 上的工作准确度,从通用 LLM 的 ~30% 拉到 **生产级 ~95%**。
-> 来源: **2026-10-12 production cutover of bi.jury.xin (Sales BI)** + 2026-10-14 R 系列全面调研 + **2026-10-15 全站 docs 镜像(168 页)**。
+> 来源: **2026-10-12 production cutover of bi.jury.xin (Sales BI)** + 2026-10-14 R 系列全面调研 + **2026-10-15 全站 docs 镜像(168 页)** + 2026-10-21 报表页 UI 契约(ch21)+ **2026-10-25 token 瘦身(触发成本 -43%)**。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Skill Version](https://img.shields.io/badge/version-v3.1-blue.svg)](CHANGELOG.md)
+[![Skill Version](https://img.shields.io/badge/version-v3.2-blue.svg)](CHANGELOG.md)
 [![Coverage](https://img.shields.io/badge/docs_mirror-168%20pages-green.svg)](#2026-10-15-docs-mirror-fold-in-168-页)
+[![Trigger Cost](https://img.shields.io/badge/trigger-2662→1520%20tok-orange.svg)](docs/token-efficiency-audit.md)
 
 ---
 
@@ -19,13 +20,14 @@
 4. [**对 Agent 使用 Evidence 准确度的提升 (Accuracy Boost)**](#对-agent-使用-evidence-准确度的提升) ← 重点
 5. [关键内容 (Key Content)](#关键内容)
 6. [数据规模与覆盖度 (Coverage)](#数据规模与覆盖度)
-7. [使用方式 (How to Use)](#使用方式)
-8. [安装 (Install)](#安装)
-9. [文件结构 (File Inventory)](#文件结构)
-10. [源数据 (Source)](#源数据)
-11. [维护与版本 (Maintenance)](#维护与版本)
-12. [贡献 (Contributing)](#贡献)
-13. [License](#license)
+7. [**Token 效率 (Token Efficiency)**](#token-效率--2026-10-25) ← 2026-10-25
+8. [使用方式 (How to Use)](#使用方式)
+9. [安装 (Install)](#安装)
+10. [文件结构 (File Inventory)](#文件结构)
+11. [源数据 (Source)](#源数据)
+12. [维护与版本 (Maintenance)](#维护与版本)
+13. [贡献 (Contributing)](#贡献)
+14. [License](#license)
 
 ---
 
@@ -44,7 +46,7 @@
 
 2. **加载生产经验** — 把 bi.jury.xin 项目上 **2026-10-12 实际切 prod** 时的 5 个 Critical Bug、nginx 5 处 patch、postgres_fdw 跨 DB 实战,蒸馏成可复用的章节,让下一个 agent 不必重新踩坑。
 
-3. **提供完整知识索引** — 2026-10-15 把 docs.evidence.dev **sitemap 153 URL 全部抓取**(168 页 markdown mirror),覆盖 12 个主题,沉淀到 Obsidian vault。本 skill 在 ch19/ch20 提供索引 + 反模式。
+3. **提供完整知识索引** — 2026-10-15 把 docs.evidence.dev **sitemap 153 URL 全部抓取**(168 页 markdown mirror),覆盖 12 个主题,沉淀到 Obsidian vault。本 skill 在 ch19/ch20 提供索引 + 反模式,ch21 提供报表页 UI 契约(图表 / 表格 / 3-piece 验收)。
 
 ---
 
@@ -84,11 +86,12 @@
 
 ### 给 Operator 看的视角
 
-- **决策快查**: 14 大决策表 + 12 阶段 actionable → `cheatsheet.md`
-- **框架语义**: 12 大 framework + 解释为什么 → `frameworks.md`
-- **术语字典**: 80+ 关键术语 → `glossary.md`
-- **模式 + 反模式**: 8 大模式 → `patterns.md`
-- **20 章深度内容**: 见下表
+- **决策快查**: 16 大决策表 + 12 阶段 actionable → `references/cheatsheet.md`
+- **框架语义**: 12 大 framework + 解释为什么 → `references/frameworks.md`
+- **术语字典**: 80+ 关键术语 → `references/glossary.md`
+- **模式 + 反模式**: 8 大模式 → `references/patterns.md`
+- **交付格式 / 排错**: 输出结构 + 失败处置 → `references/protocol.md`
+- **21 章深度内容**: 见下表
 
 ---
 
@@ -118,11 +121,11 @@
 
 2. **Anti-patterns 显式列出** — skill 把所有已知错误模式写成表格(60+ 条),agent 写完后会自动 grep 反模式表。
 
-3. **Quick Decision Table 模式** — `SKILL.md` 顶部 + `cheatsheet.md` 第 1-15 节,每条决策一行,**3 秒查表**而不是 30 分钟推理。
+3. **Quick Decision Table 模式** — `references/cheatsheet.md` 第 1-16 节,每条决策一行,**3 秒查表**而不是 30 分钟推理。SKILL.md 正文只保留"触发时必须立刻知道"的三类信息(反模式 / 验收 / 回写),其余按需加载(见 [Token 效率](#token-效率--2026-10-25))。
 
 4. **Full coverage mirror** — ch19 的 94 组件全量索引 + 168 页本地 mirror,任何组件问题**有原文可查**,不需要 LLM 幻觉。
 
-5. **Single source of truth** — SKILL.md / cheatsheet.md / topic-index.md / glossary.md **互引**,agent 推理时不会因来源不一致而混乱。
+5. **Single source of truth** — SKILL.md / references/cheatsheet.md / references/topic-index.md / references/glossary.md **互引**,agent 推理时不会因来源不一致而混乱。
 
 6. **Real verification SOP** — ch09 把"修完怎么验证"做成 6 步流程,agent 不会宣称"已修"就跑(避免假成功)。
 
@@ -130,7 +133,7 @@
 
 ## 关键内容
 
-### 20 章 Chapter(按需加载)
+### 21 章 Chapter(按需加载)
 
 #### 实战篇 (ch01-ch10) — 2026-10-12 切 prod 笔记
 
@@ -167,14 +170,21 @@
 | [ch19](chapters/ch19-components-full-reference.md) | Components Full Reference | **94 个组件全量索引**(按 sidebar 8 大类) + Quick Decision + Anti-pattern | R3 升级版 |
 | [ch20](chapters/ch20-evidence-warehouse-truth.md) | Evidence Warehouse Truth | Single-page + 4 anchor + 12 connector → data-sources mapping | R14 |
 
+#### 报表页 UI 契约篇 (ch21) — 2026-10-21
+
+| # | 主题 | 关键内容 | 来源 |
+|---|---|---|---|
+| [ch21](chapters/ch21-report-ui-contracts.md) | Report Page UI Contracts | 图表 14 条 + 表格 page_size + 页面内容边界 + 3-piece 验收 + A/B 变体实验法 | prod 二进制实证 |
+
 ---
 
 ## 数据规模与覆盖度
 
 | 维度 | 数量 |
 |---|---|
-| Total chapters | **20** (10 实战 + 8 R 系列 + 2 docs mirror) |
-| Total markdown lines | ~7,800+ |
+| Total chapters | **21** (10 实战 + 8 R 系列 + 2 docs mirror + 1 报表页契约) |
+| Total markdown lines | ~9,200+ |
+| **触发一次的上下文成本** | **1,520 tok**(index 172 + load 1,348)— 优化前 2,662,**-43%** |
 | Obsidian 实战笔记 | 10 个 (cutover 实战) + R 系列 19 篇 (~7,150 行) + **168 页 docs mirror** |
 | Components 全量索引 | **94 个** (sitemap 全覆盖) |
 | Connector 支持 | **12 个** (Athena / Redshift / S3 / GCS / R2 / etc.) |
@@ -184,21 +194,70 @@
 
 ---
 
+## Token 效率
+
+> 2026-10-25 · 实测数据见 [docs/token-efficiency-audit.md](docs/token-efficiency-audit.md)(依据 Perplexity《Designing, Refining, and Maintaining Agent Skills》+ Anthropic `skill-creator` 篇幅约定)
+
+一个 skill 被 agent 加载时付两笔钱:
+
+| 层 | 内容 | 何时付 | 预算 |
+|---|---|---|---|
+| **index** | 整个 frontmatter(YAML) | **每会话 × 每个用户**,无论是否触发 | ~100 tok |
+| **load** | SKILL.md 正文 | 每次触发 | ~5,000 tok |
+| **files** | `references/` `chapters/` | 只有 agent 真去读时 | 无上限 |
+
+index 层最容易被忽略 —— 它**每会话都付**,并在整个 skill 组合上累加。
+
+### 实测结果
+
+| 层 | 优化前 | 优化后 | 降幅 |
+|---|---|---|---|
+| index | 217 tok | **172 tok** | -21% |
+| load | 2,445 tok | **1,348 tok** | **-45%** |
+| files | 13,769 tok | 14,964 tok | +9%(内容下沉,按需读才付) |
+| **触发一次合计** | **2,662 tok** | **1,520 tok** | **-43%** |
+
+测量口径:CJK ≈ 1 token/char,latin ≈ 1 token/3.5 chars(估算,用于预算对比)。
+
+### 做了什么
+
+1. **frontmatter 去重** — description 里的 `Triggers:` 散文子句删掉(9 条短语在 `triggers:` 里已有一份);`when_to_use` 压成一句市场行摘要
+2. **正文去索引化** — `Quick Decision Table`(26 行)下沉到 `references/cheatsheet.md` §16;`Chapter Index`(26 行)压成 4 行章组映射
+3. **场景化契约外移** — `Output Format` + `When it fails` 移进 `references/protocol.md`(交付时 / 出错时才需要)
+4. **内容零丢失** — 删表前先把 ch19/ch20/ch21 的独有决策条目补进 `references/cheatsheet.md` 与 `references/topic-index.md`,20/20 关键条目校验通过
+5. **路由面不缩水** — `triggers:` 补回第 7 条 `components 全量 / evidence-warehouse 单页`(v0.3 迁移时丢的 ch19/ch20 路由)
+
+### 为什么 index 停在 172 而不是 ~100
+
+`token_cost.py` 的算法显示:frontmatter 里 **CJK 只占 17 tok**,剩 155 tok 是 YAML 语法 + 英文散文 + 7 条触发词。再压只能砍 `triggers:` —— 那是路由能力,砍了就漏触发。
+
+同库对照:`sql-skill` index 231 tok,本 skill 172 tok;全库 60 个 skill 的 index 合计 11,304 tok/会话,本 skill 排 28/60(中位)。真正的 portfolio 大头是 `long-doc-processor`(1,516 tok,是本 skill 的 9 倍)。
+
+### 复审
+
+```bash
+cd ~/.claude/skills/skill-forge
+python -m scripts.run --skill ~/.claude/skills/evidence-skill --scope audit-only
+# [phase 0] audit: ... index=172tok load=1348tok
+```
+
+---
+
 ## 使用方式
 
 ### 触发条件(自动加载)
 
-skill 会在以下关键词出现时**自动激活**:
+skill 会在以下关键词出现时**自动激活**(机器可读的 `triggers:` 字段是唯一归属地,benchmark 正样本由它派生):
 
 ```
-'evidence', 'bi.jury.xin', 'sales-bi', 'cutover',
-'connection.yaml FLAT', 'theme.yaml 5 层', 'html block',
-'mcp selfhost', 'pgbouncer', 'cloudflare access', 'bi tool selection',
-'components 全量', 'evidence-warehouse single page', 'docs mirror',
-'sidebar 不等于 sitemap'
+'evidence', 'bi.jury.xin', 'sales-bi',
+'Evidence 报表 / 页面 / 组件 / 部署',
+'combo_chart / legend / page_size / 瀑布图',
+'Evidence 升级 / MCP / FastMCP',
+'components 全量 / evidence-warehouse 单页'
 ```
 
-完整触发列表见 [SKILL.md description](SKILL.md)。
+完整触发列表见 [SKILL.md frontmatter](SKILL.md)。
 
 ### 主动查询
 
@@ -250,16 +309,18 @@ ls ~/.claude/skills/evidence-skill/SKILL.md
 
 ```
 evidence-skill/
-├── SKILL.md                                       # Master entry, 触发条件 + Quick Decision
+├── SKILL.md                                       # Master entry,触发条件 + 反模式 + 验收(98 行)
 ├── README.md                                      # 本文件(中文详细)
 ├── README.en.md                                   # English version
 ├── LICENSE                                        # MIT
-├── CHANGELOG.md                                   # v1 → v3.1 演进史
-├── glossary.md                                    # 80+ 关键术语字典
-├── patterns.md                                    # 8 大模式 + 反模式表
-├── cheatsheet.md                                  # 14 大决策表(最高优先级快查)
-├── topic-index.md                                 # 80+ 主题 → chapter 映射
-├── frameworks.md                                  # 12 大 framework 详解
+├── CHANGELOG.md                                   # v1 → v3.2 演进史
+├── references/                                    # 按需加载(只有 agent 真去读才付 token)
+│   ├── cheatsheet.md                              # 16 大决策表(最高优先级快查)
+│   ├── patterns.md                                # 8 大模式 + 反模式表
+│   ├── glossary.md                                # 80+ 关键术语字典
+│   ├── frameworks.md                              # 12 大 framework 详解
+│   ├── topic-index.md                             # 80+ 主题 → chapter 映射
+│   └── protocol.md                                # 交付输出格式 + 出错处置
 ├── chapters/
 │   ├── ch01-architecture.md                       # 实战 — Architecture
 │   ├── ch02-config.md                             # 实战 — Configuration
@@ -280,7 +341,11 @@ evidence-skill/
 │   ├── ch17-upgrade-mgmt.md                       # R20 — Upgrade & Change Mgmt
 │   ├── ch18-bi-tools.md                           # R10/R13 — BI Tool Comparison
 │   ├── ch19-components-full-reference.md          # **v3.1** R3-up — 94 组件全量
-│   └── ch20-evidence-warehouse-truth.md           # **v3.1** R14 — Warehouse 单页真相
+│   ├── ch20-evidence-warehouse-truth.md           # **v3.1** R14 — Warehouse 单页真相
+│   └── ch21-report-ui-contracts.md                # **v3.2** 报表页 UI 契约(图表/表格/3-piece)
+├── docs/
+│   ├── token-efficiency-audit.md                  # token 优化前后实测证据
+│   └── skillopt-benchmark.jsonl                   # 已复核的 16 行评测集
 └── (obsidian vault 本地镜像 — 见下)
 ```
 
@@ -368,6 +433,7 @@ E:/obsidian/evidence/
 - **v1** (2026-10-13) — 初始生成,10 章实战篇
 - **v3** (2026-10-14) — R 系列 fold-in,18 章 + 19 R 沉淀
 - **v3.1** (2026-10-15) — Docs Mirror fold-in,20 章 + 168 页 mirror + R14 Evidence Warehouse 真相
+- **v3.2** (2026-10-25) — 报表页 UI 契约(ch21)+ **token 瘦身**(触发成本 2,662 → 1,520 tok,-43%);参考文件重排到 `references/`
 
 详见 [CHANGELOG.md](CHANGELOG.md)。
 

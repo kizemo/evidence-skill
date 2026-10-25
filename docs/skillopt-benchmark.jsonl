@@ -1,0 +1,16 @@
+{"task_id": "rout-001", "task": "我要在 bi.jury.xin 上改一个 Evidence 报表页的图表,现在图例不显示,怎么修?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "rout-002", "task": "Evidence BI 的 connection.yaml 到底怎么写?要连 PG 的中文表。", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "rout-003", "task": "sales-bi 这个项目现在线上是什么状态?切 Core 之后要注意什么?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "rout-004", "task": "帮我搭一个 Evidence 的报表页,组件怎么选?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "rout-005", "task": "combo_chart 双 Y 轴怎么配?legend 里的线要带标记。", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "rout-006", "task": "我要升级 Evidence Core 2026 到新版本,流程是什么?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "rout-007", "task": "Evidence 一共有多少个组件?给我完整清单和各自的属性。", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "rout-008", "task": "Evidence Warehouse 的数据源连接器怎么配?在哪一页?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "contr-001", "task": "这个 skill 由哪些文件组成?哪些是触发时必读的,哪些是按需加载的?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "contr-002", "task": "用这个 skill 回答问题时,输出应该是什么结构?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "contr-003", "task": "改完 Evidence 报表页之后,怎么才算验证通过?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "contr-004", "task": "Evidence 报表页 500 了,按什么顺序排查?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "qual-001", "task": "我改了 nginx 的 proxy_pass,直接 reload 就行了吗?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "qual-002", "task": "我的 SQL 直接 SELECT 店铺 FROM ...,哪里错了?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "qual-003", "task": "Self-host 版 Evidence 能加 RLS 吗?能让 agent 查数据吗?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}
+{"task_id": "qual-004", "task": "我踩到一个坑,怎么按规范把它沉淀回 Obsidian 和 brain?", "judge": {"kind": "rule", "checks": [{"op": "max_chars", "arg": 1500}, {"op": "min_citations", "arg": 1}]}}

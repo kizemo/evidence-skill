@@ -1,141 +1,98 @@
 ---
 name: evidence-skill
-description: Use when configuring, debugging, or upgrading Evidence BI Core 2026 v0.10.1 (bi.jury.xin production deployment) — connecting via connection.yaml / evidence.config.yaml / theme.yaml, encountering SQL `column "ds" does not exist` / `cross-database references are not implemented` / `html-tags-not-allowed` / `unsupported type undefined` / `SUBSTR(date)` errors on Chinese schemas (双引号 `"店铺"` `"订单日期"` `"销售金额"`), patching nginx 5 locations to migrate from Legacy 40.x to Core, setting up postgres_fdw for cross-DB queries, applying Pentagram 5-region CSS, writing `{% html %}` blocks, tuning pgbouncer + statement_timeout + matview, evaluating against Metabase / Lightdash, or implementing FastMCP server for self-hosted AI agent access. Also covers **94 components full reference** (sidebar 8 大类), **Evidence Warehouse single-page truth** (anchor-only), **12 connector → data-sources mapping**. Triggers: 'evidence', 'bi.jury.xin', 'sales-bi', 'cutover', 'connection.yaml FLAT', 'theme.yaml 5 层', 'html block', 'mcp selfhost', 'pgbouncer', 'cloudflare access', 'bi tool selection', 'components 全量', 'evidence-warehouse single page', 'docs mirror', 'sidebar 不等于 sitemap'.
+description: >-
+  Use when configuring, debugging, or designing Evidence BI Core 2026 pages on
+  bi.jury.xin — charts, tables, filters, Chinese-schema SQL, nginx, themes, MCP,
+  upgrades, and report-page UI contracts.
+triggers:
+  - "evidence"
+  - "bi.jury.xin"
+  - "sales-bi"
+  - "Evidence 报表 / 页面 / 组件 / 部署"
+  - "combo_chart / legend / page_size / 瀑布图"
+  - "Evidence 升级 / MCP / FastMCP"
+  - "components 全量 / evidence-warehouse 单页"
+mutating: true
+brain_first: exempt
+when_to_use: "Evidence BI Core 2026 pages on bi.jury.xin."
+version: 0.3.1
 ---
-
-<!-- argument-hint: [topic: connection|sql|nginx|fdw|cutover|theme|mcp|upgrade|components|warehouse] -->
 
 # Evidence Core 2026 — Sales BI
 
-**Source**: `E:/obsidian/evidence/` (10 实战笔记) + `E:/obsidian/evidence/_research/` (19 R 系列, 7,150+ 行) + `E:/obsidian/evidence/_sources/evidence-docs/` (168 页 docs mirror, 12 主题) + GBrain (6 pages, 11 facts)
-**Generated**: 2026-10-13 (初始) → 2026-10-14 fold-in (R1-R21) → **2026-10-15 v3.1** (168 页 docs mirror 落地 + ch19/ch20)
+> **改完必验收 3-piece(SQL 直查 + Playwright 真渲染 + 像素采样)——「配置对了」不等于「渲染对了」。**
 
-## Quick Decision Table
+**Source**: `E:/obsidian/evidence/` + `_research/`(19 R 系列)+ GBrain;契约以 **prod 二进制实证**为准,不采信文档推测。
+**Generated**: 2026-10-13 初始 → 2026-10-14 fold-in(R1-R21)→ 2026-10-21 v0.3(补 ch21 报表页 UI 契约)→ **2026-10-25 v0.3.1(token 瘦身,index/load 降 ~40%)**
 
-| 触发 | 立即做 | 详见 |
+## When to use / NOT
+
+| 用本 skill | 不用本 skill |
+|---|---|
+| Evidence Core 0.10.1 页面/图表/表格/SQL/部署/升级/主题/MCP/报表页 UI 契约 | Legacy 40.x 新功能 · Studio 专属 · 非 PG · 纯 CSS 调优(用 `impeccable`) |
+
+## Chapter Index
+
+21 章按需加载;详细摘要 → `references/topic-index.md`。
+
+| 章组 | 覆盖 | 何时读 |
 |---|---|---|
-| 改 Core config | `docker compose up -d --force-recreate` (不是 `restart`) | ch02 |
-| 中文 PG 列名 | 双引号包: `"店铺"` `"订单日期"` `"销售金额"` | ch05 |
-| date 字段 | `TO_CHAR(date, 'YYYY-MM')` 不是 `SUBSTR(date, ...)` | ch05 |
-| 跨 DB | 2-segment path `taobao.mart_X` 不是 3-segment | ch07 |
-| 切 nginx | 5 处 patch (不是 1 行 sed) | ch06 |
-| 升级 Core | 7 步 SOP + 5 分钟回滚, `upgrade-disabled` 锁 | ch17 |
-| html-tags-not-allowed | 改用 `{% html %}<block>{% /html %}` 或 `{% row %}` | ch15 |
-| 改主题 | `theme.yaml` 5 层 inheritance 真有效(不是装饰性) | ch15 |
-| 性能 | Direct Connector 无 cache → PG 端 + nginx immutable | ch14 |
-| Auth 上限 | Self-host 只有 Basic Auth, RLS/SSO 全 Studio | ch13 |
-| AI 调 Self-host | 自写 FastMCP + 4 道 SQL 防线 | ch16 |
-| 改 BI 工具? | 团队 ≥5 / 报表 >30 / 任一 RLS-SSO-邮件订阅 | ch18 |
-| 查具体组件 attrs | 本地 mirror `components/<Class>/components-<name>.md` | ch19 |
-| Evidence Warehouse 详情 | 单页 anchor,连接器都在 `data-sources/` | ch20 |
-| Sidebar 计数 ≠ sitemap | 先查 sitemap 再决定 BFS 策略 | ch20 |
+| ch01-ch10 | 架构 · config · 监控 · cutover 失败 · SQL 反模式 · nginx patch · postgres_fdw · 样式 · 复盘 · 运维速查 | 动 prod 前 |
+| ch11-ch18 | 组件 80+ · 部署 3 模式 · 鉴权 · 性能 · 主题真相 · FastMCP · 升级 SOP · BI 工具选型 | 系统性设计 |
+| ch19-ch20 | 94 组件全量索引 · Evidence Warehouse 单页真相 | 找组件 / 架构 |
+| **ch21** | **报表页 UI 契约(图表 14 条 · 表格 · 页面内容 · 3-piece · A/B 变体法)** | **改报表页** |
 
-## Chapter Index (20 章,on-demand 加载)
+## References(按需加载)
 
-### 实战篇 (ch01-ch10) — 2026-10-12 切 prod 笔记
-
-| # | 主题 | 关键内容 |
-|---|---|---|
-| [ch01](chapters/ch01-architecture.md) | Architecture | 40.x vs Core 2026, 5 处 nginx patch, 备份链 |
-| [ch02](chapters/ch02-config.md) | Configuration | connection.yaml FLAT, evidence.config.yaml STRING, force-recreate |
-| [ch03](chapters/ch03-monitoring.md) | Monitoring | systemd timer, 3 维健康检查 |
-| [ch04](chapters/ch04-cutover-failures.md) | Cutover | 时间线, 5 Critical Bug, nginx 切/回滚脚本 |
-| [ch05](chapters/ch05-sql-antipatterns.md) | SQL Anti-patterns | 中文列双引号, `ds`/`shop_name` 假名, date SUBSTR 陷阱, html-tags |
-| [ch06](chapters/ch06-nginx-patches.md) | nginx Patches | 5 处 patch 详细 diff, 5 秒回滚脚本 |
-| [ch07](chapters/ch07-fdw-cross-db.md) | postgres_fdw | 2-segment path, 5 步建表 SQL, 4 mart 表 × 142k 行 |
-| [ch08](chapters/ch08-style-unification.md) | Style & UI | 5 region Pentagram CSS Phase 1 |
-| [ch09](chapters/ch09-postmortem.md) | Postmortem | 假成功分析, 真验证 SOP 6 步 |
-| [ch10](chapters/ch10-ops-quickref.md) | Ops Quick Ref | 服务器路径, commit 链 |
-
-### R 系列篇 (ch11-ch18) — 2026-10-14 全面调研
-
-| # | 主题 | 关键内容 | R 来源 |
-|---|---|---|---|
-| [ch11](chapters/ch11-components.md) | Components Framework | 7 大类 + Markup 语法 + 雷区 | R3 |
-| [ch12](chapters/ch12-deployment.md) | Deployment | 3 模式 + 4 平台 + CLI 13 命令 | R2 |
-| [ch13](chapters/ch13-auth-rbac.md) | Auth & RBAC | 7 反代 + self-host 上限 + RLS | R7 |
-| [ch14](chapters/ch14-performance.md) | Performance | Direct Connector 无 cache + 4 阶段 actionable | R11, R19 |
-| [ch15](chapters/ch15-theme-truth.md) | Theme & Pentagram P2 | theme.yaml 5 层 + 推翻 ch08 + `{% html %}` | R12, R15, R21 |
-| [ch16](chapters/ch16-mcp-selfhost.md) | MCP Self-Host | FastMCP + 8 tools + 4 道 SQL 防线 | R17 |
-| [ch17](chapters/ch17-upgrade-mgmt.md) | Upgrade & Change Mgmt | 7 步 SOP + 5 分钟回滚 + Obsidian 双向 | R20 |
-| [ch18](chapters/ch18-bi-tools.md) | BI Tool Comparison | vs Metabase/Lightdash + 触发重评阈值 | R10, R13 |
-
-### Docs Mirror 篇 (ch19-ch20) — 2026-10-15 168 页 docs mirror 落地
-
-| # | 主题 | 关键内容 | 来源 |
-|---|---|---|---|
-| [ch19](chapters/ch19-components-full-reference.md) | Components Full Reference | **94 个组件全量索引**(按 sidebar 8 大类) + Quick Decision + Anti-pattern | R3 升级版 |
-| [ch20](chapters/ch20-evidence-warehouse-truth.md) | Evidence Warehouse Truth | Single-page + 4 anchor + 12 connector → data-sources mapping | R14 |
-
-## Supporting Files
-
-| 文件 | 用途 | 何时读 |
-|---|---|---|
-| [frameworks.md](frameworks.md) | 12 大核心 framework 详解 | 需要解释"为什么"时 |
-| [topic-index.md](topic-index.md) | 80+ 主题 → chapter 映射 | grep 不到时翻 |
-| [glossary.md](glossary.md) | 关键术语定义 (R 系列扩展) | 概念陌生时 |
-| [patterns.md](patterns.md) | 8 大模式 (含反模式表) | 复用现成方案时 |
-| [cheatsheet.md](cheatsheet.md) | 14 大决策表 + 12 阶段 actionable | 决策快查 |
-| [CHANGELOG.md](CHANGELOG.md) | skill 演进历史 | 想知道"为什么改"时 |
-
-## 调研 / 沉淀入口 (外部引用)
-
-- **本地 R 系列**: `E:/obsidian/evidence/_research/` (19 R, 7,150+ 行) — INDEX: `_research/INDEX.md`
-- **168 页 docs mirror** (2026-10-15 全量抓取): `E:/obsidian/evidence/_sources/evidence-docs/` — INDEX: `_INDEX.md`
-  - 8 个主题独立子目录: `features/` (14) · `core-concepts/` (8) · `components/{8 大类}/` (94) · `cli/` (3) · `MCP/` (3) · `self-host/` (6) · `Direct Connectors/` (8) · `evidence-warehouse/` (1)
-  - 抓取脚本: `C:/Temp/evidence_crawler.py` (BFS) + `C:/Temp/backfill_components.py` (sitemap 遍历)
-  - sitemap 全覆盖 153 URL,**sidebar ≠ sitemap** 案例见 ch20
-- **长期 KB**: `E:/obsidian/_knowledge_base/evidence/2026-10-product-blueprint.md`
-- **GBrain recall** (keyless, keyword):
-  - `recall projects/sales-bi` — 项目 + 5 facts
-  - `recall concepts/pentagram-editorial` — 3 facts
-  - `recall concepts/postgres-fdw` — 1 fact
-  - `recall companies/evidence-dev` — 1 fact
-  - `search "Evidence Core 2026"` — 跨 page 关键字
+| 文件 | 何时读 |
+|---|---|
+| `references/cheatsheet.md` | 16 决策表,决策快查(最高优先级) |
+| `references/patterns.md` | 8 大模式 + 反模式表,复用现成方案 |
+| `references/glossary.md` | 术语不熟 |
+| `references/frameworks.md` | 需要解释"为什么" |
+| `references/topic-index.md` | 80+ 主题 → 章映射,grep 不到时 |
+| `references/protocol.md` | 交付答案格式 · 出错先查 |
 
 ## Scope & Limits
 
-**覆盖**: Core 2026 v0.10.1 配置/部署/排错/升级/性能/主题/MCP/战略对比; 中文 PG schema; nginx patch; postgres_fdw; theme.yaml 5 层; FastMCP 4 道 SQL 防线; vs Metabase/Lightdash 决策; **94 components 全量 + Evidence Warehouse 真相 (168 页 docs mirror)**
+**覆盖**: Core 0.10.1 配置/部署/排错/升级/性能/主题/MCP/报表页 UI 契约;中文 PG schema;nginx patch;vs Metabase/Lightdash。
+**不覆盖**: Legacy 40.x 新功能;Studio 专属;非 PG;多 Core;Pentagram 深度设计。
+**已知限制**: `cryptography` 包损坏 (Python 3.14);13+ page 待修列名 bug;gbrain keyless 无 semantic search。
+**升级频率**: 每周 changelog BREAKING;每月 PG slow query;每季 Core 升级 (14 天 hold-back)。
 
-**不覆盖**: Legacy 40.x 新功能; Studio 完整功能; 非 PG 数据库; 多 Core; Pentagram 深度设计(只覆盖 5 region + Phase 2 路径)
+## Anti-Patterns(踩坑飞轮)
 
-**已知限制**: `cryptography` 包损坏 (Python 3.14); 13+ page 待修列名 bug; Browser 真渲染缺 CF Access token; gbrain keyless 无 semantic search; `add_link` 暂时不接未声明 link_type; **gbrain 当前被另一 session 锁定 (PID 864412),write 操作需先 close_owner**; docs mirror `html2text` 转换有标题/段落空行(原 Mintlify 站特性)
+> 真实踩坑 = 已验证 ≥1 次;不收未验证断言。
 
-**升级频率**: 每周 changelog BREAKING; 每月 PG slow query; 每季 Core 升级 (14 天 hold-back); 每半年 BI 工具重评
+| 看到 | 别做 | 真做 |
+|---|---|---|
+| 中文 `"店铺"` 直接 SQL | 不加双引号 | 必须 `"店铺"` 包裹 — ch05 |
+| nginx proxy_pass 改完 | 1 行 sed 重启 | 5 处 patch + 5 秒回滚 — ch06 |
+| 改 prod 页面 | 直接 scp | 备份 + diff;**备份必须对应要回到的状态** — ch21 §4 |
+| 图表改完 | 看配置就说好了 | 3-piece 验收 — ch21 §5 |
+| 想写「怎么改报表」的说明 | 写进报表页 | 放 json / memory / handoff — ch21 §3 |
+| 同步脚本加正则 | 用位置组 | 具名组 + 注入漂移往返测试 — ch21 §5 |
+| agent 查 Evidence | 暴露 SQL 不拦截 | FastMCP 4 道防线 — ch16 |
+| sidebar 找不到组件 | 推断 sidebar=sitemap | BFS+sitemap 混合 — ch20 |
 
-**真验证 SOP** (任何"修完宣布成功"前必做): ① 直连 PG 跑 page SQL ② 真 HTTP GET ③ 5+ pattern grep ④ 列字段+真值 ⑤ force-recreate 后等 5s
+## Verification
 
-## Skill 反馈 (踩坑/调研/决策回写)
+- [ ] `wc -w SKILL.md` ≤ 1000(重内容在 chapters/ 与 references/)
+- [ ] frontmatter 可被 YAML 解析(description 用块标量)
+- [ ] 新契约落在 chapter,没堆在 SKILL.md
+- [ ] 改 prod 前后都跑 3-piece
+- [ ] 沉淀已回写 Obsidian / memory
 
-答 Evidence BI 相关问题、或完成大决策/调研/踩坑时,**主动引导回写到 Obsidian**。
-
-### 触发条件
+## 沉淀回写 SOP(答完/踩坑后主动做)
 
 | 触发 | 立即做 | 模板 |
 |---|---|---|
-| 切 prod / 升级失败 / ≥2 次重试未修 | 复制 `_playbook/_踩坑模板.md` 写 `E:/obsidian/evidence/YYYY-MM-DD-bug-<short>.md` | postmortem 4 section |
-| 新技术 / 新工具 / 重大变更前调研 | 复制 `_playbook/_调研模板.md` 写 `E:/obsidian/evidence/_research/R<NN>-<topic>.md` | R 系列 7 section |
-| 不可逆 / ≥1 月影响决策 | 复制 `_playbook/_决策模板.md` 写 `E:/obsidian/evidence/_decisions/YYYY-MM-DD-<short>.md` | ADR 6 section |
-| 完成后 | (可选) `gbrain remember fact="..." entity=projects/sales-bi` | — |
+| 切 prod / 升级失败 / ≥2 次重试未修 | 写 `E:/obsidian/evidence/YYYY-MM-DD-bug-<short>.md` | postmortem 4 section |
+| 新技术 / 新工具 / 重大变更前调研 | 写 `E:/obsidian/evidence/_research/R<NN>-<topic>.md` | R 系列 7 section |
+| 不可逆 / ≥1 月影响决策 | 写 `E:/obsidian/evidence/_decisions/YYYY-MM-DD-<short>.md` | ADR 6 section |
+| 组件契约新发现 | 补 `chapters/ch21-*.md`(图表/表格契约) | 契约表 + 踩坑表 |
+| 完成后(可选) | `gbrain remember fact="..." entity=projects/sales-bi` | — |
 
-### 模板位置 (Obsidian)
-
-- 踩坑模板: `E:/obsidian/evidence/_playbook/_踩坑模板.md`
-- 调研模板: `E:/obsidian/evidence/_playbook/_调研模板.md`
-- 决策模板: `E:/obsidian/evidence/_playbook/_决策模板.md`
-- 入口索引: `E:/obsidian/evidence/_playbook/_README.md`
-
-### 门槛(满足 ≥ 2 条才用)
-
-1. 不可逆(切 prod / 选 BI 工具 / 改认证策略)
-2. 影响 ≥ 1 个月
-3. 涉及多个有道理的方案
-4. 未来 agent 重做时必须知道当时为什么
-
-### 周回写 SOP
-
-每周五或下次 session 开头前自审 3 问:
-1. 本周 sales-bi 项目上发生了什么值得沉淀的?
-2. 事件类型 = 踩坑 / 调研 / 决策?
-3. ≥1 个 → 复制对应模板填骨架,标 TODO 等实测结果
-
+**模板位置**:`E:/obsidian/evidence/_playbook/`(踩坑/调研/决策 3 个模板)+ `_README.md` 索引。
+**门槛**(满足 ≥2 条才写):不可逆 / 影响 ≥1 月 / 多个合理方案 / 未来 agent 重做必须知道原因。
+**周回写**:每周五或下次 session 开头自审 3 问 —— 这周有什么值得沉淀?属踩坑/调研/决策哪类?有 → 填模板。
