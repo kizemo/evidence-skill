@@ -29,8 +29,9 @@
       - ⚠️ 注意:`doctor` 的 `connection` / `pglite_data_dir` 两条 warn 在共享 serve 下是**常态**(serve 正当其职持锁),不是故障
       - 🔍 **观察项 · facts_drain**:0.60.287.0 有个上游 bug —— 自动事实抽取的 job insert 违反自己的
         `minion_jobs.chk_attempts_order` 约束,导致 facts-absorb 任务 error。当前 `health=idle`、backlog=0
-        **不阻塞**,但 ingest 一有页面要抽 facts 就会复现。ingest 后必须核对 `facts_inserted` 是否 > 0;
-        若一直 0,先查 serve 日志的 `facts_drain_deferred`,再考虑升级到 0.60.400.0(需先评估 changelog)
+        **不阻塞**,但本会话 4 个 serve 里**触发了 2 次**(不是长跑偶发)—— 只要 facts 抽取被触发就会撞。
+        ingest 后必须核对 `facts_inserted` 是否 > 0;若一直 0,先查 serve 日志的 `facts_drain_deferred`,
+        再考虑升级到 0.60.400.0(需先评估 changelog,跨 113 minor)
 
 - [ ] **Phase C · Anti-Patterns 飞轮观察 1-2 周**
 
