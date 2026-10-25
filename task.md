@@ -21,17 +21,25 @@
 
 ## 下一步 / Next(按优先级)
 
-- [ ] **Phase B · ingest 168 页 docs mirror + R1-R21 到 brain**(锁已释放,**从未跑过**)
+- [x] **Phase B · ingest evidence vault 到 brain —— ✅ 完成(2026-10-25 17:29)**
 
-      - `E:/obsidian/evidence/_sources/evidence-docs/`(168 页)
-      - `E:/obsidian/evidence/_research/`(19 R,7,150+ 行;与 ch11-ch18 重叠时以 chapter 内版本为准)
-      - 验证:`gbrain stats --json`(pages 应 18 → ~200)+ `curl /health` 仍 ok
-      - ⚠️ 注意:`doctor` 的 `connection` / `pglite_data_dir` 两条 warn 在共享 serve 下是**常态**(serve 正当其职持锁),不是故障
-      - 🔍 **观察项 · facts_drain**:0.60.287.0 有个上游 bug —— 自动事实抽取的 job insert 违反自己的
-        `minion_jobs.chk_attempts_order` 约束,导致 facts-absorb 任务 error。当前 `health=idle`、backlog=0
-        **不阻塞**,但本会话 4 个 serve 里**触发了 2 次**(不是长跑偶发)—— 只要 facts 抽取被触发就会撞。
-        ingest 后必须核对 `facts_inserted` 是否 > 0;若一直 0,先查 serve 日志的 `facts_drain_deferred`,
-        再考虑升级到 0.60.400.0(需先评估 changelog,跨 113 minor)
+      - **225 页 / 831 chunks** 导入 `evidence-vault` source,0 errors
+      - 源数据实况:`E:/obsidian/evidence/` 共 **222 个 .md**(10-19 那次扁平化后,168 页 mirror 变成了
+        `components/` 94 + `core-concepts/` 8 + `features/` 14 + `cli/` 3 + `MCP/` 3 + `self-host/` 6 +
+        `Direct Connectors/` 8 + `evidence-warehouse/` 1 + `_research/` 21 + `_research/_mirror/` 18 +
+        `_sources/evidence-docs/` 32 + 根目录实战笔记 14)
+      - **修了 3 个 vault 文件的 YAML frontmatter**(否则 gbrain 拒绝猜 → 那 3 篇进不了脑):
+        `2026-10-19-bug-...md`(列表项后跟 `← 注释`)、`R20` / `R12`(`mirror: [a] [b]` 两个 flow 序列挤一行)
+      - 检索验证:`components/charts/components-scatter_chart` / `components-combo_chart` /
+        `components-range_calendar` / `features-page-settings` 全部命中,type=external-doc
+      - `doctor` 完整跑 **29 检查 = 22 ok + 7 warn / 0 fail**,warn 与 import 前完全相同(无新增)
+      - ⚠️ `doctor` 的 `connection` / `pglite_data_dir` 两条 warn 在共享 serve 下是**常态**,不是故障
+
+- [ ] **(可选)facts 层补齐** —— `facts_inserted: 0`:import 路径**不给 facts-absorb 任务入队**
+      (backlog 始终 0),所以 225 页只进了 search/query 层,`recall`(facts)层是空的。
+      ⚠️ 修正先前的归因:那个 `chk_attempts_order` 报错**不是 import 造成的**,是 17:18 stdio
+      auto-spawn 撞的(在 import 之前);它是独立的上游 bug,只在有 facts 任务入队时才会咬人。
+      补齐方式:手动 `gbrain capture` / `gbrain put_page` 触发 facts 抽取,或等 gbrain 升级。
 
 - [ ] **Phase C · Anti-Patterns 飞轮观察 1-2 周**
 
@@ -52,7 +60,10 @@
 | **铸 token 需独占脑** | `gbrain auth create/rescope/revoke` 都要 DB 直连 → 必须先停 serve。流程:停 serve → 铸/改 token → 重启 serve → `bootstrap harness --token` |
 | **token 重名** | `gbrain auth create bootstrap-harness` 会和旧的同名 → rescope 要 `--id <uuid>`(从 `gbrain auth list` 拿) |
 | 全库 index 合计 | 11,304 tok/会话(60 个 skill);下一个该优化的是 `long-doc-processor`(**1,516 tok**) |
-| **facts_drain 上游 bug** | gbrain 0.60.287.0 的 job insert 违反自家 `minion_jobs.chk_attempts_order` 约束 → facts-absorb 任务 error。`gbrain repair` 无对应 kind,只有升级能解。当前 health=idle / backlog=0 不阻塞 |
+| **facts_drain 上游 bug** | gbrain 0.60.287.0 的 job insert 违反自家 `minion_jobs.chk_attempts_order` 约束 → facts-absorb 任务 error。`gbrain repair` 无对应 kind,`apply-migrations` 显示全部已应用 → 只有升级能解。**与本次 import 无关**(报错发生在 import 之前的 stdio auto-spawn) |
+| **`gbrain ingest` 命令不存在** | 正确命令是 **`gbrain import <dir>`**(handoff 里写错了)。相关:`sync` / `capture` / `extract links\|timeline\|all` / `embed` |
+| **`gbrain list` 默认 limit=50** | 统计页数必须加 `--limit 1000`,否则看到的是被截断的 50。`sources list` 的 `page_count` 是**磁盘 .md 文件数**,不是 DB 页数 |
+| **vault 已被扁平化** | 2026-10-19 把 `_sources/evidence-docs/<子目录>/*` 移到 `E:/obsidian/evidence/<子目录>/*`。老的 `_sources/evidence-docs/` 只剩 32 个 data-sources 页 |
 
 ## 历史里程碑(已 commit,不再回看)
 
@@ -63,6 +74,7 @@
 - [x] 2026-10-15 **patch v3.1.1** —— 共享 HTTP serve 迁移(Codex wired + Claude Code 5 hooks 落盘)
 - [x] 2026-10-25 **v3.2** —— ch21 报表页 UI 契约 + **token 瘦身(-42%)** + `references/` 重排 + README 完善 + GitHub description/topics
 - [x] 2026-10-25 **Phase A** —— gbrain serve 复活 + 双 harness 收敛(token 轮换 + permission 预批准 + 5 hooks 重确认)
+- [x] 2026-10-25 **Phase B** —— evidence vault 225 页 / 831 chunks ingest 进 brain(新 source `evidence-vault`)+ 修 3 个 vault frontmatter
 
 ## 关键路径索引
 
