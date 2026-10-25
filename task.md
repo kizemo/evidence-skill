@@ -35,11 +35,21 @@
       - `doctor` 完整跑 **29 检查 = 22 ok + 7 warn / 0 fail**,warn 与 import 前完全相同(无新增)
       - ⚠️ `doctor` 的 `connection` / `pglite_data_dir` 两条 warn 在共享 serve 下是**常态**,不是故障
 
-- [ ] **(可选)facts 层补齐** —— `facts_inserted: 0`:import 路径**不给 facts-absorb 任务入队**
-      (backlog 始终 0),所以 225 页只进了 search/query 层,`recall`(facts)层是空的。
-      ⚠️ 修正先前的归因:那个 `chk_attempts_order` 报错**不是 import 造成的**,是 17:18 stdio
-      auto-spawn 撞的(在 import 之前);它是独立的上游 bug,只在有 facts 任务入队时才会咬人。
-      补齐方式:手动 `gbrain capture` / `gbrain put_page` 触发 facts 抽取,或等 gbrain 升级。
+- [x] **facts 层 provider 已解决** —— 配了 `claude-cli` provider(免 API key):
+      `facts.extraction_model=claude-cli:claude-fable-5-1` + `pricing.overrides {claude-cli:*:0}`;
+      实测 provider 被调用(AI SDK Warning 出现)
+- [x] **升级评估(A 方案)** —— **不可行**:`gbrain self-upgrade` 报 "is up to date",
+      check-only 报 update_available=false + latest_version 空(网络查不到 GitHub release)。
+      **但升级不需要** —— 见下方「facts 层真实范围」
+- [ ] **facts 层补齐(只剩最后一步)** —— 阻塞在 **168 file-drift hold**:
+      之前 import 时 vault 还不是 git repo,DB 与磁盘不一致。路径:
+      ① `gbrain sources status evidence-vault --json` 看清单
+      ② `gbrain repair file-drift --source evidence-vault --prefer <file|database>`(要用户决策)
+      ③ `gbrain sync --source evidence-vault --no-pull --no-embed` 触发 backstop
+      ④ `gbrain doctor --only facts_drain --json` 验证 facts_inserted > 0
+      ⚠️ **facts 层只对 15 页 note 开放**(R1/R2/R4/R6/R7/R9/R11/R13/R15/R17/R19/R21 等),
+      167 页 external-doc 是**设计上**归 search/query,不进 facts(ELIGIBLE_TYPES)
+      详见 `handoff-gbrain-facts-extraction-2026-10-25.md`
 
 - [ ] **Phase C · Anti-Patterns 飞轮观察 1-2 周**
 
